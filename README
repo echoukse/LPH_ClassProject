@@ -1,8 +1,13 @@
 Check for EC for comments, for ESHA for insight on where to read the relevant code
-Kishore testing
+
 Right now, we have the two level scheduling as two pools, active and pending and Round robin inner level. 
 This is good for our large warp, but we need to change it for allowing us to choose the threads in the warp dynamically.
-Not sure yet at which place that needs to be done.
+
+I think I found the place to change the stuff for implementing the concept of choosing the threads in a warp dynamically.
+Still need to figure out a way to be able to update the counters correctly. 
+Once that is done, we can get to work and implement the large warp.
+
+Once that is done, adding our actual idea should be really easy.
 
 Each time a warp is stalled, it is kicked back to pending and a new warp comes in to replace it.
 I dont know if the branch divergence part of the paper has been implemented. I think not.
