@@ -7,7 +7,15 @@ I think I found the place to change the stuff for implementing the concept of ch
 Still need to figure out a way to be able to update the counters correctly. 
 Once that is done, we can get to work and implement the large warp.
 
+Have a separate reg file for each sub warp. Read the code for the reg file update.
+
 Once that is done, adding our actual idea should be really easy.
 
 Each time a warp is stalled, it is kicked back to pending and a new warp comes in to replace it.
 I dont know if the branch divergence part of the paper has been implemented. I think not.
+
+
+important functions: 
+ptx_reg_t ptx_thread_info::get_operand_value( 
+vi cuda-sim/instructions.cc
+ptx_reg_t ptx_thread_info::get_reg( const symbol *reg )

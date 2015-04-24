@@ -1806,9 +1806,9 @@ public:
     std::vector<shd_warp_t>   m_warp;   // per warp information array
     barrier_set_t             m_barriers;
     ifetch_buffer_t           m_inst_fetch_buffer;
-    std::vector<register_set> m_pipeline_reg;
+    std::vector<register_set> m_pipeline_reg; // EC: WHats this
     Scoreboard               *m_scoreboard;
-    opndcoll_rfu_t            m_operand_collector;
+    opndcoll_rfu_t            m_operand_collector; //EC: whats this
 
     //schedule
     std::vector<scheduler_unit*>  schedulers;

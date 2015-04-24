@@ -1329,9 +1329,9 @@ void ptx_thread_info::ptx_exec_inst( warp_inst_t &inst, unsigned lane_id)
    g_ptx_sim_num_insn++;
    
    //not using it with functional simulation mode
-   if(!(this->m_functionalSimulationMode))
+   if(!(this->m_functionalSimulationMode))  //EC: cycle accurate mode
        ptx_file_line_stats_add_exec_count(pI);
-   
+  //ESHA : check this 
    if ( gpgpu_ptx_instruction_classification ) {
       init_inst_classification_stat();
       unsigned space_type=0;
