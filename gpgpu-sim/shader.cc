@@ -841,6 +841,10 @@ void scheduler_unit::cycle() //ESHA: check this out
                 } else {
                     valid_inst = true;
                     if ( !m_scoreboard->checkCollision(warp_id, pI) ) {
+
+                        //EC: Till here we come as a large warp. This is where we dynamically make a warp and schedule it.
+                        //EC: We need to be able to initialize the warp correctly and make sure all the warp ID dependencies are okay.
+                        //EC: We also need to take care of tying the register sets to threads and having a separate decoder for the reg set.
                         SCHED_DPRINTF( "Warp (warp_id %u, dynamic_warp_id %u) passes scoreboard\n",
                                        (*iter)->get_warp_id(), (*iter)->get_dynamic_warp_id() );
                         ready_inst = true;
@@ -848,6 +852,7 @@ void scheduler_unit::cycle() //ESHA: check this out
                         assert( warp(warp_id).inst_in_pipeline() ); 
                         if ( (pI->op == LOAD_OP) || (pI->op == STORE_OP) || (pI->op == MEMORY_BARRIER_OP) ) { //EC: LD/ST
                             //EC: each pipeline has its own register_Set with the instructions in that pipeline.
+                            //EC: each pipeline has its own issue_warp(). This is the function that needs to be called in loop for dynamically
                             if( m_mem_out->has_free() ) { //EC: m_mem_out is a register holding instructions memory_bound, active
                                 m_shader->issue_warp(*m_mem_out,pI,active_mask,warp_id);
                                 issued++;
