@@ -678,6 +678,8 @@ void shader_core_ctx::func_exec_inst( warp_inst_t &inst )
 
 void shader_core_ctx::issue_warp( register_set& pipe_reg_set, const warp_inst_t* next_inst, const active_mask_t &active_mask, unsigned warp_id )
 {
+    //ESHA: EC: Actually, this could be the place we implement the whole thing. Come till here as a large warp.
+    //EC: Eureka!! 
     warp_inst_t** pipe_reg = pipe_reg_set.get_free();
     assert(pipe_reg);
     
@@ -852,7 +854,8 @@ void scheduler_unit::cycle() //ESHA: check this out
                         assert( warp(warp_id).inst_in_pipeline() ); 
                         if ( (pI->op == LOAD_OP) || (pI->op == STORE_OP) || (pI->op == MEMORY_BARRIER_OP) ) { //EC: LD/ST
                             //EC: each pipeline has its own register_Set with the instructions in that pipeline.
-                            //EC: each pipeline has its own issue_warp(). This is the function that needs to be called in loop for dynamically
+                            //EC: each pipeline has its own issue_warp() call but from the same structure, m_shader. 
+                            //EC: This is the function that needs to be called in loop for dynamically
                             if( m_mem_out->has_free() ) { //EC: m_mem_out is a register holding instructions memory_bound, active
                                 m_shader->issue_warp(*m_mem_out,pI,active_mask,warp_id);
                                 issued++;
