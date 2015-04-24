@@ -182,6 +182,7 @@ void warp_inst_t::broadcast_barrier_reduction(const active_mask_t& access_mask)
 
 void warp_inst_t::generate_mem_accesses() //ESHA: EC: Read this function! This is where everything seems to happen
 {
+    //EC: this is where our contribution will probably be.
     if( empty() || op == MEMORY_BARRIER_OP || m_mem_accesses_created ) 
         return;
     if ( !((op == LOAD_OP) || (op == STORE_OP)) )
@@ -789,6 +790,7 @@ void simt_stack::update( simt_mask_t &thread_done, addr_vector_t &next_pc, addre
 
 void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
 {
+    //ESHA: EC: Eureka? I dunno :/ probably a good idea to do it here. but the cycle count needs to be updated multiple times. check that
     for ( unsigned t=0; t < m_warp_size; t++ ) {
         if( inst.active(t) ) {
             if(warpId==(unsigned (-1)))
