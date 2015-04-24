@@ -189,7 +189,7 @@ void ptx_file_line_stats_add_uncoalesced_gmem(unsigned pc, unsigned n_access)
     
     ptx_file_line_stats& line_stats = ptx_file_line_stats_tracker[ptx_file_line(pInsn->source_file(), pInsn->source_line())];
     line_stats.gmem_n_access_total += n_access;
-    line_stats.gmem_warp_count += 1;
+    line_stats.gmem_warp_count += 1;//EC: some profiling that might be relevant?
 }
 
 // a class that tracks the inflight memory instructions of a shader core 

@@ -241,9 +241,9 @@ void warp_inst_t::generate_mem_accesses() //ESHA: EC: Read this function! This i
                 //assert( addr < m_config->gpgpu_shmem_size ); 
                 unsigned bank = m_config->shmem_bank_func(addr);
                 new_addr_type word = line_size_based_tag_func(addr,m_config->WORD_SIZE);
-                bank_accs[bank][word]++;
+                bank_accs[bank][word]++; //EC: This is where the accesses are recorded
             }
-            //EC: What is a bank memory broadcast?
+            //EC: What is a bank memory broadcast? something like a coalesce - if more than one  thread want the same set of data.
             if (m_config->shmem_limited_broadcast) {
                 // step 2: look for and select a broadcast bank/word if one occurs
                 bool broadcast_detected = false;
@@ -266,7 +266,7 @@ void warp_inst_t::generate_mem_accesses() //ESHA: EC: Read this function! This i
                     if( broadcast_detected ) 
                         break;
                 }
-            
+                //EC: these things need to happen for each small warp 
                 // step 3: figure out max bank accesses performed, taking account of broadcast case
                 unsigned max_bank_accesses=0;
                 for( b=bank_accs.begin(); b != bank_accs.end(); b++ ) {
@@ -291,7 +291,7 @@ void warp_inst_t::generate_mem_accesses() //ESHA: EC: Read this function! This i
                 }
 
                 // step 4: accumulate
-                total_accesses+= max_bank_accesses;
+                total_accesses+= max_bank_accesses; //EC: check if this is the number finally displayed on profiling
             } else {
                 // step 2: look for the bank with the maximum number of access to different words 
                 unsigned max_bank_accesses=0;
@@ -320,7 +320,7 @@ void warp_inst_t::generate_mem_accesses() //ESHA: EC: Read this function! This i
     case global_space: case local_space: case param_space_local:
         if( m_config->gpgpu_coalesce_arch == 13 ) {
            if(isatomic())
-               memory_coalescing_arch_13_atomic(is_write, access_type);
+               memory_coalescing_arch_13_atomic(is_write, access_type); //EC: Global_mem : Coalescing
            else
                memory_coalescing_arch_13(is_write, access_type);
         } else abort();
