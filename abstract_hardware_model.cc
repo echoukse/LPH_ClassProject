@@ -196,6 +196,7 @@ void warp_inst_t::generate_mem_accesses() //ESHA: EC: Read this function! This i
 
     bool is_write = is_store();
 
+    //EC: there you go, this tells us where is the memory being accessed from 
     mem_access_type access_type;
     switch (space.get_type()) {
     case const_space:
@@ -221,6 +222,8 @@ void warp_inst_t::generate_mem_accesses() //ESHA: EC: Read this function! This i
 
     switch( space.get_type() ) {
     case shared_space: {
+        //EC: I dont really understand the concept of the subwarp yet
+        //EC: Probably divides the warp into the allowable number of LD/ST simultaneous executions?
         unsigned subwarp_size = m_config->warp_size / m_config->mem_warp_parts;
         unsigned total_accesses=0;
         for( unsigned subwarp=0; subwarp <  m_config->mem_warp_parts; subwarp++ ) {
@@ -239,7 +242,7 @@ void warp_inst_t::generate_mem_accesses() //ESHA: EC: Read this function! This i
                 new_addr_type word = line_size_based_tag_func(addr,m_config->WORD_SIZE);
                 bank_accs[bank][word]++;
             }
-
+            //EC: What is a bank memory broadcast?
             if (m_config->shmem_limited_broadcast) {
                 // step 2: look for and select a broadcast bank/word if one occurs
                 bool broadcast_detected = false;
