@@ -986,7 +986,8 @@ protected:
                 memreqaddr[i] = 0;
         }
         dram_callback_t callback;
-        new_addr_type memreqaddr[MAX_ACCESSES_PER_INSN_PER_THREAD]; // effective address, upto 8 different requests (to support 32B access in 8 chunks of 4B each)
+        //ESHA: EC: this is where we can get the per thread memory address from in the struct warp_inst_t
+        new_addr_type memreqaddr[MAX_ACCESSES_PER_INSN_PER_THREAD]; // effective address, upto 8 different requests (to support 32B access in 8 chunks of 4B each) 
     };
     bool m_per_scalar_thread_valid;
     std::vector<per_thread_info> m_per_scalar_thread;
@@ -1064,6 +1065,7 @@ class core_t {
 };
 
 
+//ESHA: EC: what does this register_set do? 
 //register that can hold multiple instructions.
 class register_set {
 public:

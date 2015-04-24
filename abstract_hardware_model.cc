@@ -180,7 +180,7 @@ void warp_inst_t::broadcast_barrier_reduction(const active_mask_t& access_mask)
     }
 }
 
-void warp_inst_t::generate_mem_accesses()
+void warp_inst_t::generate_mem_accesses() //ESHA: EC: Read this function! This is where everything seems to happen
 {
     if( empty() || op == MEMORY_BARRIER_OP || m_mem_accesses_created ) 
         return;

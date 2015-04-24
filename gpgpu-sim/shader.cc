@@ -673,7 +673,7 @@ void shader_core_ctx::func_exec_inst( warp_inst_t &inst )
 {
     execute_warp_inst_t(inst);
     if( inst.is_load() || inst.is_store() )
-        inst.generate_mem_accesses();
+        inst.generate_mem_accesses(); //EC: this is where LD/ST gets executed
 }
 
 void shader_core_ctx::issue_warp( register_set& pipe_reg_set, const warp_inst_t* next_inst, const active_mask_t &active_mask, unsigned warp_id )
@@ -686,7 +686,7 @@ void shader_core_ctx::issue_warp( register_set& pipe_reg_set, const warp_inst_t*
     **pipe_reg = *next_inst; // static instruction information
     (*pipe_reg)->issue( active_mask, warp_id, gpu_tot_sim_cycle + gpu_sim_cycle, m_warp[warp_id].get_dynamic_warp_id() ); // dynamic instruction information
     m_stats->shader_cycle_distro[2+(*pipe_reg)->active_count()]++;
-    func_exec_inst( **pipe_reg );
+    func_exec_inst( **pipe_reg ); //EC: executing the instructions
     if( next_inst->op == BARRIER_OP ){
     	m_warp[warp_id].store_info_of_last_inst_at_barrier(*pipe_reg);
         m_barriers.warp_reaches_barrier(m_warp[warp_id].get_cta_id(),warp_id,const_cast<warp_inst_t*> (next_inst));
@@ -844,10 +844,11 @@ void scheduler_unit::cycle() //ESHA: check this out
                         SCHED_DPRINTF( "Warp (warp_id %u, dynamic_warp_id %u) passes scoreboard\n",
                                        (*iter)->get_warp_id(), (*iter)->get_dynamic_warp_id() );
                         ready_inst = true;
-                        const active_mask_t &active_mask = m_simt_stack[warp_id]->get_active_mask();
-                        assert( warp(warp_id).inst_in_pipeline() );
-                        if ( (pI->op == LOAD_OP) || (pI->op == STORE_OP) || (pI->op == MEMORY_BARRIER_OP) ) {
-                            if( m_mem_out->has_free() ) {
+                        const active_mask_t &active_mask = m_simt_stack[warp_id]->get_active_mask(); //EC: gets the sctive mask here
+                        assert( warp(warp_id).inst_in_pipeline() ); 
+                        if ( (pI->op == LOAD_OP) || (pI->op == STORE_OP) || (pI->op == MEMORY_BARRIER_OP) ) { //EC: LD/ST
+                            //EC: each pipeline has its own register_Set with the instructions in that pipeline.
+                            if( m_mem_out->has_free() ) { //EC: m_mem_out is a register holding instructions memory_bound, active
                                 m_shader->issue_warp(*m_mem_out,pI,active_mask,warp_id);
                                 issued++;
                                 issued_inst=true;

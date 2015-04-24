@@ -382,7 +382,7 @@ protected:
     std::vector<shd_warp_t>* m_warp;
     register_set* m_sp_out;
     register_set* m_sfu_out;
-    register_set* m_mem_out;
+    register_set* m_mem_out; //EC: Scheduler unit has a record of the memory outstanding? 
 
     int m_id;
 };
