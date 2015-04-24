@@ -1,0 +1,6 @@
+Check for EC for comments, for ESHA for insight on where to read the relevant code
+
+Right now, we have the two level scheduling as two pools, active and pending and Round robin inner level. 
+
+Each time a warp is stalled, it is kicked back to pending and a new warp comes in to replace it.
+I dont know if the branch divergence part of the paper has been implemented. I think not.
