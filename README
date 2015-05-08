@@ -19,3 +19,14 @@ important functions:
 ptx_reg_t ptx_thread_info::get_operand_value( 
 vi cuda-sim/instructions.cc
 ptx_reg_t ptx_thread_info::get_reg( const symbol *reg )
+
+
+Things to do :
+
+1- In execute function, divide into subwarps and increment our own variable between cycles. Display this extra variable with the other stats. 
+:
+2- Break the 128 bit mask into smaller sub warps  and get them into groups , just based on more 1's
+
+3- Once 2 is implemented, make sub warps based on the coalescing.
+
+4
