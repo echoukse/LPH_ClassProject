@@ -404,7 +404,7 @@ public:
     * Returning the configuration of the shader core, used by the functional simulation only so far
     */
    const struct shader_core_config * getShaderCoreConfig();
-   
+   int get_LPH_SIMD_SIZE(); 
    
    //! Get shader core Memory Configuration
     /*!

@@ -543,11 +543,15 @@ void gpgpu_sim::set_kernel_done( kernel_info_t *kernel )
 
 void set_ptx_warp_size(const struct core_config * warp_size);
 
+int gpgpu_sim::get_LPH_SIMD_SIZE(){ return m_shader_config->LPH_SIMD_SIZE;} //ESHA_CHANGED
+
 gpgpu_sim::gpgpu_sim( const gpgpu_sim_config &config ) 
     : gpgpu_t(config), m_config(config)
 { 
     m_shader_config = &m_config.m_shader_config;
+    printf("ESHA_CHANGED: in shader config simd is  %d \n", m_shader_config->LPH_SIMD_SIZE);
     m_memory_config = &m_config.m_memory_config;
+//    m_shader_config->warp_size = 64; // ESHA_CHANGED
     set_ptx_warp_size(m_shader_config);
     ptx_file_line_stats_create_exposed_latency_tracker(m_config.num_shader());
 

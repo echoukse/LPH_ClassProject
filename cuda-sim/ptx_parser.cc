@@ -37,6 +37,7 @@ static const struct core_config *g_shader_core_config;
 void set_ptx_warp_size(const struct core_config * warp_size)
 {
    g_shader_core_config=warp_size;
+   //   g_shader_core_config->warp_size = 64; //ESHA_CHANGED
 }
 
 static bool g_debug_ir_generation=false;

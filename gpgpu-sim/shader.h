@@ -1215,13 +1215,17 @@ struct shader_core_config : public core_config
 
     void init()
     {
-        int ntok = sscanf(gpgpu_shader_core_pipeline_opt,"%d:%d", 
+        int ntok = sscanf(gpgpu_shader_core_pipeline_opt,"%d:%d:%d", 
                           &n_thread_per_shader,
-                          &warp_size);
-        if(ntok != 2) {
+                          &warp_size,
+                          &LPH_SIMD_SIZE); //ESHA_CHANGED: WARP_SIZE IS BEING SCANNED FROM THE CONFIG FILE
+        if(ntok < 2) {
            printf("GPGPU-Sim uArch: error while parsing configuration string gpgpu_shader_core_pipeline_opt\n");
            abort();
 	}
+        else{
+           printf("ESHA: SIMD Width was found to be : %d\n", LPH_SIMD_SIZE);
+        }
 
 	char* toks = new char[100];
 	char* tokd = toks;
@@ -1325,6 +1329,7 @@ struct shader_core_config : public core_config
     unsigned ldst_unit_response_queue_size;
 
     int simt_core_sim_order; 
+public:    unsigned LPH_SIMD_SIZE; //ESHA_CHANGED
     
     unsigned mem2device(unsigned memid) const { return memid + n_simt_clusters; }
 };

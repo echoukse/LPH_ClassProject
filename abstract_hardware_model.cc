@@ -791,7 +791,38 @@ void simt_stack::update( simt_mask_t &thread_done, addr_vector_t &next_pc, addre
 void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
 {
     //ESHA: EC: Eureka? I dunno :/ probably a good idea to do it here. but the cycle count needs to be updated multiple times. check that
-    for ( unsigned t=0; t < m_warp_size; t++ ) {
+    
+    //ESHA_CHANGED
+    int simd_size = get_gpu()->get_LPH_SIMD_SIZE();
+    int small_warps = m_warp_size/simd_size;
+    int tInWarp;
+    active_mask_t temp_mask;
+    temp_mask.reset();
+    for(int i=0; i<m_warp_size; i++){
+        if(inst.active(i))
+            temp_mask.set(i);
+    }
+    while(temp_mask.any()){
+        for(unsigned perLane=0; perLane < simd_size; perLane++){
+            for(unsigned t=0; t<small_warps; t++){
+                tInWarp = (perLane) + (simd_size * t);
+                printf("ESHA_CHANGED: instructions active are: %d testing bit: %d \n", temp_mask.count(), tInWarp);
+                if(temp_mask.test(tInWarp)){
+                    //printf("ESHA_CHANGED: instructions active are: %d\n", temp_mask.count());
+                    temp_mask.reset(tInWarp); //taken care of for this PC, reset it
+                    if(warpId==(unsigned (-1)))
+                        warpId = inst.warp_id();
+                    unsigned tid=m_warp_size*warpId+tInWarp;
+                    m_thread[tid]->ptx_exec_inst(inst,tInWarp);
+                    //virtual function
+                    checkExecutionStatusAndUpdate(inst,tInWarp,tid);
+                    break; //found an active thread in this lane. Break and move to next lane                    
+                }
+            }
+        }
+    }
+    //printf("ESHA_CHANGED: #small warps in a alarge warp is %d\n", small_warps);
+    /*for ( unsigned t=0; t < m_warp_size; t++ ) {
         if( inst.active(t) ) {
             if(warpId==(unsigned (-1)))
                 warpId = inst.warp_id();
@@ -801,7 +832,7 @@ void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
             //virtual function
             checkExecutionStatusAndUpdate(inst,t,tid);
         }
-    } 
+    }*/ 
 }
   
 bool  core_t::ptx_thread_done( unsigned hw_thread_id ) const  
