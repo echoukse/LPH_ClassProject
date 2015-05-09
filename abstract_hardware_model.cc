@@ -183,6 +183,9 @@ void warp_inst_t::broadcast_barrier_reduction(const active_mask_t& access_mask)
 void warp_inst_t::generate_mem_accesses() //ESHA: EC: Read this function! This is where everything seems to happen
 {
     //EC: this is where our contribution will probably be.
+    //int simd_size = get_gpu()->get_LPH_SIMD_SIZE(); 
+    int simd_size = 32;
+    
     if( empty() || op == MEMORY_BARRIER_OP || m_mem_accesses_created ) 
         return;
     if ( !((op == LOAD_OP) || (op == STORE_OP)) )
@@ -335,8 +338,13 @@ void warp_inst_t::generate_mem_accesses() //ESHA: EC: Read this function! This i
         assert( m_accessq.empty() );
         mem_access_byte_mask_t byte_mask; 
         std::map<new_addr_type,active_mask_t> accesses; // block address -> set of thread offsets in warp
+        //std::vector<std::pair<new_addr_type,active_mask_t>> accesses_vector; 
+        // keep the size of active_mask as it is but limit the number of 1s to simd size
+
+        //std::vector<std::pair<new_addr_type,active_mask_t>>::iterator a_vector;  
         std::map<new_addr_type,active_mask_t>::iterator a;
-        for( unsigned thread=0; thread < m_config->warp_size; thread++ ) {
+        for( unsigned thread=0; thread < m_config->warp_size; thread++ ) 
+        { //iterate whole large warp
             if( !active(thread) ) 
                 continue;
             new_addr_type addr = m_per_scalar_thread[thread].memreqaddr[0];
@@ -347,7 +355,48 @@ void warp_inst_t::generate_mem_accesses() //ESHA: EC: Read this function! This i
                 byte_mask.set(idx+i);
         }
         for( a=accesses.begin(); a != accesses.end(); ++a ) 
-            m_accessq.push_back( mem_access_t(access_type,a->first,cache_block_size,is_write,a->second,byte_mask) );
+        {  
+            std::pair<new_addr_type,active_mask_t> temp;
+            temp.second.reset();
+            temp.first = a->first;
+            int i = 0;
+     		for(int j=0;j<MAX_WARP_SIZE;++j) //made equal to large warp size
+    		{
+                if(a->second.test(j))
+                { 
+                    ++i;
+                    temp.second.set(j);  
+                }
+
+                if( i==simd_size ) //TODO 
+                { 
+                    i=0;
+		          //   accesses_vector.push_back(temp);
+                    printf( "[generate_mem_accesses]: here is the block: %llu, and this is the mask:", temp.first );
+                    for( int k = 0; k < temp.second.size(); ++k )
+                        printf("%d", temp.second.test( k ) );
+                    printf("\n");
+
+                    m_accessq.push_back( mem_access_t(access_type,temp.first,cache_block_size,is_write,temp.second,byte_mask) ); 
+                    temp.second.reset();  
+                }
+                    
+            }
+            if( i ) //spill over simd_size 
+            { 
+                i = 0;
+ 		 // accesses_vector.push_back(temp);
+                printf( "[generate_mem_accesses]: here is the block: %llu, and this is the mask:", temp.first );
+                for( int k = 0; k < temp.second.size(); ++k )
+                    printf("%d", temp.second.test( k ) );
+                printf("\n");
+
+                m_accessq.push_back( mem_access_t(access_type,temp.first,cache_block_size,is_write,temp.second,byte_mask) ); 
+                temp.second.reset();
+            } 
+        }
+       // for( a=accesses.begin(); a != accesses.end(); ++a ) 
+       //     m_accessq.push_back( mem_access_t(access_type,a->first,cache_block_size,is_write,a->second,byte_mask) );
     }
 
     if ( space.get_type() == global_space ) {
@@ -806,7 +855,7 @@ void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
         for(unsigned perLane=0; perLane < simd_size; perLane++){
             for(unsigned t=0; t<small_warps; t++){
                 tInWarp = (perLane) + (simd_size * t);
-                printf("ESHA_CHANGED: instructions active are: %d testing bit: %d \n", temp_mask.count(), tInWarp);
+                //printf("ESHA_CHANGED: instructions active are: %d testing bit: %d \n", temp_mask.count(), tInWarp);
                 if(temp_mask.test(tInWarp)){
                     //printf("ESHA_CHANGED: instructions active are: %d\n", temp_mask.count());
                     temp_mask.reset(tInWarp); //taken care of for this PC, reset it
