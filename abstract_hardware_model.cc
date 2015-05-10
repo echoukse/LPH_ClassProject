@@ -361,39 +361,39 @@ void warp_inst_t::generate_mem_accesses() //ESHA: EC: Read this function! This i
             temp.first = a->first;
             int i = 0;
      		for(int j=0;j<MAX_WARP_SIZE;++j) //made equal to large warp size
-    		{
-                if(a->second.test(j))
-                { 
-                    ++i;
-                    temp.second.set(j);  
-                }
+    		 {
+                	if(a->second.test(j))
+                	  { 
+                    	    ++i;
+                    	    temp.second.set(j);  
+                	  }
 
-                if( i==simd_size ) //TODO 
-                { 
-                    i=0;
+                	if( i==simd_size ) //TODO 
+                	  { 
+                    	    i=0;
 		          //   accesses_vector.push_back(temp);
-                    printf( "[generate_mem_accesses]: here is the block: %llu, and this is the mask:", temp.first );
-                    for( int k = 0; k < temp.second.size(); ++k )
+                   printf( "[generate_mem_accesses]: here is the block: %llu, and this is the mask:", temp.first );
+                   for( int k = 0; k < temp.second.size(); ++k )
+                       printf("%d", temp.second.test( k ) );
+                   printf("\n");
+
+  	              	    m_accessq.push_back( mem_access_t(access_type,temp.first,cache_block_size,is_write,temp.second,byte_mask) ); 
+        	            temp.second.reset();  
+                	  }		
+                    
+            	}
+            	if( i ) //spill over simd_size 
+            	  { 
+               	     i = 0;
+ 		     // accesses_vector.push_back(temp);
+                     printf( "[generate_mem_accesses]: here is the block: %llu, and this is the mask:", temp.first );
+                     for( int k = 0; k < temp.second.size(); ++k )
                         printf("%d", temp.second.test( k ) );
                     printf("\n");
 
-                    m_accessq.push_back( mem_access_t(access_type,temp.first,cache_block_size,is_write,temp.second,byte_mask) ); 
-                    temp.second.reset();  
-                }
-                    
-            }
-            if( i ) //spill over simd_size 
-            { 
-                i = 0;
- 		 // accesses_vector.push_back(temp);
-                printf( "[generate_mem_accesses]: here is the block: %llu, and this is the mask:", temp.first );
-                for( int k = 0; k < temp.second.size(); ++k )
-                    printf("%d", temp.second.test( k ) );
-                printf("\n");
-
-                m_accessq.push_back( mem_access_t(access_type,temp.first,cache_block_size,is_write,temp.second,byte_mask) ); 
-                temp.second.reset();
-            } 
+                     m_accessq.push_back( mem_access_t(access_type,temp.first,cache_block_size,is_write,temp.second,byte_mask) ); 
+                     temp.second.reset();
+                  }    
         }
        // for( a=accesses.begin(); a != accesses.end(); ++a ) 
        //     m_accessq.push_back( mem_access_t(access_type,a->first,cache_block_size,is_write,a->second,byte_mask) );
@@ -406,7 +406,7 @@ void warp_inst_t::generate_mem_accesses() //ESHA: EC: Read this function! This i
 }
 
 void warp_inst_t::memory_coalescing_arch_13( bool is_write, mem_access_type access_type )
-{
+{    int simd_size = 32;
     // see the CUDA manual where it discusses coalescing rules before reading this
     unsigned segment_size = 0;
     unsigned warp_parts = m_config->mem_warp_parts;
@@ -456,22 +456,71 @@ void warp_inst_t::memory_coalescing_arch_13( bool is_write, mem_access_type acce
                     info.bytes.set(idx+i);
             }
         }
-
+        // Here all the accesses have been put into data structure but for each block address - mask length is warp size
+        // the mask length will be kept as warp size but the 1s are simited to simd_size as done for caches
         // step 2: reduce each transaction size, if possible
         std::map< new_addr_type, transaction_info >::iterator t;
         for( t=subwarp_transactions.begin(); t !=subwarp_transactions.end(); t++ ) {
+            std::pair<new_addr_type,transaction_info> temp;   
             new_addr_type addr = t->first;
+            temp.first = addr;
             const transaction_info &info = t->second;
+             temp.second.chunks = info.chunks;
+            temp.second.bytes = info.bytes;
+          int i;  
+	  for(int j=0;j<MAX_WARP_SIZE;++j) //need to set MAX_WARP_SIZE = LARGE warp size		
+ 	   {
+		//int i=0;
+      	          if(info.active.test(j))
+                   {
+                     ++i;
+                     temp.second.active.set(j); 
+                   } 
+		  if(i==simd_size)
+                   {
+                     i=0;
+                     printf( "[mem_coalesce_accesses]: here is the block: %llu, and this is the mask:", temp.first );
+                    for( int k = 0; k < temp.second.active.size(); ++k )
+                        printf("%d", temp.second.active.test(k) );
+                    printf("\n");
+                    //getchar();
 
-            memory_coalescing_arch_13_reduce_and_send(is_write, access_type, info, addr, segment_size);
+                     memory_coalescing_arch_13_reduce_and_send(is_write, access_type, temp.second, temp.first, segment_size);
+                    temp.second.active.reset(); 
+ 
+		   }	 
+            }
+	        if(i)
+                  {
+                    i=0;
+                    printf( "[mem_coalesce_accesses]: here is the block: %llu, and this is the mask:", temp.first );
+                    for( int k = 0; k < temp.second.active.size(); ++k )
+                        printf("%d", temp.second.active.test(k) );
+                    printf("\n");
 
-        }
+                     memory_coalescing_arch_13_reduce_and_send(is_write, access_type, temp.second, temp.first, segment_size);
+                    temp.second.active.reset(); 
+                                       
+                  }  
+  }
+
+       
+  
+        // step 2: reduce each transaction size, if possible
+      //  std::map< new_addr_type, transaction_info >::iterator t;
+      //  for( t=subwarp_transactions.begin(); t !=subwarp_transactions.end(); t++ ) {
+     //       new_addr_type addr = t->first;
+     //      const transaction_info &info = t->second;
+
+      //      memory_coalescing_arch_13_reduce_and_send(is_write, access_type, info, addr, segment_size);
+
+      //  }
     }
 }
 
 void warp_inst_t::memory_coalescing_arch_13_atomic( bool is_write, mem_access_type access_type )
 {
-
+  int simd_size=32;
    assert(space.get_type() == global_space); // Atomics allowed only for global memory
 
    // see the CUDA manual where it discusses coalescing rules before reading this
@@ -536,6 +585,51 @@ void warp_inst_t::memory_coalescing_arch_13_atomic( bool is_write, mem_access_ty
 
            std::list<transaction_info>::const_iterator t;
            for(t=transaction_list.begin(); t!=transaction_list.end(); t++) {
+               // For each transaction
+               const transaction_info &info = *t;
+               transaction_info temp;
+               temp.chunks = info.chunks;
+               temp.bytes = info.bytes;
+               int i=0;
+               for(int j=0;j<MAX_WARP_SIZE;++j) //need to set MAX_WARP_SIZE = LARGE warp size		
+ 	   {
+      	          if(info.active.test(j))
+                   {
+                     ++i;
+                     temp.active.set(j); 
+                   } 
+		  if(i==simd_size)
+                   {
+                     i=0;
+                     printf( "[mem_coalesce_atomic_accesses]: here is the block: %llu, and this is the mask:", temp );
+                    for( int k = 0; k < temp.active.size(); ++k )
+                        printf("%d", temp.active.test(k) );
+                    printf("\n");
+                    //getchar();
+
+                     memory_coalescing_arch_13_reduce_and_send(is_write, access_type, temp, addr, segment_size);
+                    temp.active.reset(); 
+ 
+		   }	 
+            }
+	        if(i)
+                  {
+                    i=0;
+                    printf( "[mem_coalesce_atomic_accesses]: here is the block: %llu, and this is the mask:", temp );
+                    for( int k = 0; k < temp.active.size(); ++k )
+                        printf("%d", temp.active.test(k) );
+                    printf("\n");
+
+                     memory_coalescing_arch_13_reduce_and_send(is_write, access_type, temp, addr, segment_size);
+                    temp.active.reset(); 
+                                       
+                  } 
+           }
+        
+
+	
+
+	   for(t=transaction_list.begin(); t!=transaction_list.end(); t++) {
                // For each transaction
                const transaction_info &info = *t;
                memory_coalescing_arch_13_reduce_and_send(is_write, access_type, info, addr, segment_size);
@@ -841,7 +935,7 @@ void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
 {
     //ESHA: EC: Eureka? I dunno :/ probably a good idea to do it here. but the cycle count needs to be updated multiple times. check that
     
-#if LARGE_WARP 1
+#if LARGE_WARP==1
     //ESHA_CHANGED
     int simd_size = get_gpu()->get_LPH_SIMD_SIZE();
     int small_warps = m_warp_size/simd_size;
@@ -874,7 +968,7 @@ void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
 #endif
     //printf("ESHA_CHANGED: #small warps in a alarge warp is %d\n", small_warps);
     
-#if NORMAL 1
+#if NORMALWARP==1 //changed from NORMAL as in the project there is an enum with same name which was causing error while compiling
     for ( unsigned t=0; t < m_warp_size; t++ ) {
         if( inst.active(t) ) {
             if(warpId==(unsigned (-1)))
