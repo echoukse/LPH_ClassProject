@@ -1219,6 +1219,9 @@ struct shader_core_config : public core_config
                           &n_thread_per_shader,
                           &warp_size,
                           &LPH_SIMD_SIZE); //ESHA_CHANGED: WARP_SIZE IS BEING SCANNED FROM THE CONFIG FILE
+
+        lph_simd_size = LPH_SIMD_SIZE;
+
         if(ntok < 2) {
            printf("GPGPU-Sim uArch: error while parsing configuration string gpgpu_shader_core_pipeline_opt\n");
            abort();

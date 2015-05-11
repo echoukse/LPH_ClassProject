@@ -28,6 +28,8 @@
 #ifndef ABSTRACT_HARDWARE_MODEL_INCLUDED
 #define ABSTRACT_HARDWARE_MODEL_INCLUDED
 
+extern int lph_simd_size;
+
 #define NORMALWARP 0
 #define LARGE_WARP 1
 // Forward declarations
@@ -1146,6 +1148,7 @@ private:
 	std::vector<warp_inst_t*> regs;
 	const char* m_name;
 };
+
 
 #endif // #ifdef __cplusplus
 
