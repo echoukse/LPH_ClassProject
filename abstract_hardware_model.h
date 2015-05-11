@@ -30,6 +30,7 @@
 
 extern int lph_simd_size;
 
+#define PRINT false
 #define NORMALWARP 0
 #define LARGE_WARP 1
 // Forward declarations

@@ -36,7 +36,6 @@
 #include "option_parser.h"
 #include <algorithm>
 
-#define PRINT false
 int lph_simd_size = 32;
 
 unsigned mem_access_t::sm_next_access_uid = 0;   
@@ -340,7 +339,8 @@ void warp_inst_t::generate_mem_accesses() //ESHA: EC: Read this function! This i
         abort();
     }
 
-    if( cache_block_size ) {
+    if( cache_block_size ) 
+    {
         assert( m_accessq.empty() );
         mem_access_byte_mask_t byte_mask; 
         std::map<new_addr_type,active_mask_t> accesses; // block address -> set of thread offsets in warp
@@ -360,6 +360,8 @@ void warp_inst_t::generate_mem_accesses() //ESHA: EC: Read this function! This i
             for( unsigned i=0; i < data_size; i++ ) 
                 byte_mask.set(idx+i);
         }
+
+#if LARGE_WARP == 1
         for( a=accesses.begin(); a != accesses.end(); ++a ) 
         {  
             std::pair<new_addr_type,active_mask_t> temp;
@@ -407,8 +409,13 @@ void warp_inst_t::generate_mem_accesses() //ESHA: EC: Read this function! This i
 				temp.second.reset();
 			}    
         }
-       // for( a=accesses.begin(); a != accesses.end(); ++a ) 
-       //     m_accessq.push_back( mem_access_t(access_type,a->first,cache_block_size,is_write,a->second,byte_mask) );
+#endif
+
+#if NORMALWARP == 1
+       for( a=accesses.begin(); a != accesses.end(); ++a ) 
+           m_accessq.push_back( mem_access_t(access_type,a->first,cache_block_size,is_write,a->second,byte_mask) );
+#endif
+
     }
 
     if ( space.get_type() == global_space ) 
@@ -476,6 +483,7 @@ void warp_inst_t::memory_coalescing_arch_13( bool is_write, mem_access_type acce
         // Here all the accesses have been put into data structure but for each block address - mask length is warp size
         // the mask length will be kept as warp size but the 1s are simited to simd_size as done for caches
         // step 2: reduce each transaction size, if possible
+#if LARGE_WARP == 1
         std::map< new_addr_type, transaction_info >::iterator t;
         for( t=subwarp_transactions.begin(); t !=subwarp_transactions.end(); t++ ) 
         {
@@ -526,16 +534,19 @@ void warp_inst_t::memory_coalescing_arch_13( bool is_write, mem_access_type acce
 				temp.second.active.reset(); 
 			}  
   		}
+#endif
 
-        // step 2: reduce each transaction size, if possible
-      //  std::map< new_addr_type, transaction_info >::iterator t;
-      //  for( t=subwarp_transactions.begin(); t !=subwarp_transactions.end(); t++ ) {
-     //       new_addr_type addr = t->first;
-     //      const transaction_info &info = t->second;
+#if NORMALWARP == 1
+		// step 2: reduce each transaction size, if possible
+		std::map< new_addr_type, transaction_info >::iterator t;
+		for( t=subwarp_transactions.begin(); t !=subwarp_transactions.end(); t++ ) 
+		{
+			new_addr_type addr = t->first;
+			const transaction_info &info = t->second;
+			memory_coalescing_arch_13_reduce_and_send(is_write, access_type, info, addr, segment_size);
+		}
+#endif
 
-      //      memory_coalescing_arch_13_reduce_and_send(is_write, access_type, info, addr, segment_size);
-
-      //  }
     }
 }
 
@@ -599,14 +610,17 @@ void warp_inst_t::memory_coalescing_arch_13_atomic( bool is_write, mem_access_ty
            }
        }
 
-       // step 2: reduce each transaction size, if possible
-       std::map< new_addr_type, std::list<transaction_info> >::iterator t_list;
-       for( t_list=subwarp_transactions.begin(); t_list !=subwarp_transactions.end(); t_list++ ) {
+		// step 2: reduce each transaction size, if possible
+		std::map< new_addr_type, std::list<transaction_info> >::iterator t_list;
+		for( t_list=subwarp_transactions.begin(); t_list !=subwarp_transactions.end(); t_list++ ) 
+		{
            // For each block addr
            new_addr_type addr = t_list->first;
            const std::list<transaction_info>& transaction_list = t_list->second;
 
            std::list<transaction_info>::const_iterator t;
+
+#if LARGE_WARP == 1
            for(t=transaction_list.begin(); t!=transaction_list.end(); t++) 
            {
 				// For each transaction
@@ -652,15 +666,18 @@ void warp_inst_t::memory_coalescing_arch_13_atomic( bool is_write, mem_access_ty
 					temp.active.reset(); 
 				} 
 			}
+#endif
 
-
+#if NORMALWARP == 1
 			/*[Ali]: Kishore, shouldn't this part be commented?*/
+			/*[Ali]: not anymore after adding directives*/
 	   		for(t=transaction_list.begin(); t!=transaction_list.end(); t++) 
 	   		{
 				// For each transaction
 				const transaction_info &info = *t;
 				memory_coalescing_arch_13_reduce_and_send(is_write, access_type, info, addr, segment_size);
 			}
+#endif
 		}
 	}
 }
@@ -962,7 +979,7 @@ void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
 {
     //ESHA: EC: Eureka? I dunno :/ probably a good idea to do it here. but the cycle count needs to be updated multiple times. check that
     
-#if LARGE_WARP==1
+#if LARGE_WARP == 1
     //ESHA_CHANGED
     int simd_size = get_gpu()->get_LPH_SIMD_SIZE();
     int small_warps = m_warp_size/simd_size;
@@ -995,7 +1012,7 @@ void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
 #endif
     //printf("ESHA_CHANGED: #small warps in a alarge warp is %d\n", small_warps);
     
-#if NORMALWARP==1 //changed from NORMAL as in the project there is an enum with same name which was causing error while compiling
+#if NORMALWARP == 1 //changed from NORMAL as in the project there is an enum with same name which was causing error while compiling
     for ( unsigned t=0; t < m_warp_size; t++ ) {
         if( inst.active(t) ) {
             if(warpId==(unsigned (-1)))
