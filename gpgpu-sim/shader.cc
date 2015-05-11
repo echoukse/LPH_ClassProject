@@ -669,12 +669,49 @@ void shader_core_ctx::fetch()
     }
 }
 
+
 void shader_core_ctx::func_exec_inst( warp_inst_t &inst )
 {
     execute_warp_inst_t(inst);
 //ESHA: EC: this function only goes over all the threads in the warp and executes instructions to update the regfile, unimportant for LD/ST
+    #if PAPER_LARGE_WARP 
+    if( inst.is_load() || inst.is_store() ){
+        int simd_size = get_gpu()->get_LPH_SIMD_SIZE();
+        int small_warps = m_warp_size/simd_size;
+        int tInWarp;
+        active_mask_t temp_mask, backup_mask;
+        temp_mask.reset();
+        backup_mask.reset();
+        for(int i=0; i<m_warp_size; i++){
+            if(inst.active(i)){
+                temp_mask.set(i);
+                backup_mask.set(i);
+            }
+        }
+        while(temp_mask.any()){
+            inst.reset_active();
+            for(unsigned perLane=0; perLane < simd_size; perLane++){
+                for(unsigned t=0; t<small_warps; t++){
+                    tInWarp = (perLane) + (simd_size * t);
+                    if(temp_mask.test(tInWarp)){
+                        temp_mask.reset(tInWarp);
+                        inst.set_lane_active(tInWarp);
+                    }
+                }
+            }  
+            inst.generate_mem_accesses();
+        }
+        inst.reset_active();
+        for(int i=0; i<m_warp_size; i++){
+            if(backup_mask.test(i)){
+                inst.set_lane_active(i);
+            }
+        }       
+    }
+    #else
     if( inst.is_load() || inst.is_store() )
         inst.generate_mem_accesses(); 
+    #endif
 //EC: this is where LD/ST gets executed . this is where coalescing happens too. This is what needs to change
 }
 

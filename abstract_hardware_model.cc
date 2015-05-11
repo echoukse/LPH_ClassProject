@@ -133,6 +133,11 @@ void warp_inst_t::clear_active( const active_mask_t &inactive ) {
     m_warp_active_mask &= ~inactive;
 }
 
+void warp_inst_t::set_lane_active( unsigned lane_id ) {
+    m_warp_active_mask.set(lane_id);
+}
+
+
 void warp_inst_t::set_not_active( unsigned lane_id ) {
     m_warp_active_mask.reset(lane_id);
 }
@@ -150,6 +155,9 @@ void warp_inst_t::set_active( const active_mask_t &active ) {
    }
 }
 
+void warp_inst_t::reset_active(){
+    m_warp_active_mask.reset();
+}
 void warp_inst_t::do_atomic(bool forceDo) {
     do_atomic( m_warp_active_mask,forceDo );
 }
@@ -189,6 +197,8 @@ void warp_inst_t::generate_mem_accesses() //ESHA: EC: Read this function! This i
 
     /*lph_simd_size is declared at the end of abstract_hardware_model.h as a global variable! 
       default value is 32, we can overwrite it using the config file.*/
+
+    //EC: Pass a new mask telling which threads of the warp are being executed right now. Loop over the cases of this function till we are done with all the warps
     int simd_size = lph_simd_size;
     
     if( empty() || op == MEMORY_BARRIER_OP || m_mem_accesses_created ) 
@@ -979,7 +989,7 @@ void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
 {
     //ESHA: EC: Eureka? I dunno :/ probably a good idea to do it here. but the cycle count needs to be updated multiple times. check that
     
-#if LARGE_WARP == 1
+#if (LARGE_WARP || PAPER_LARGE_WARP)
     //ESHA_CHANGED
     int simd_size = get_gpu()->get_LPH_SIMD_SIZE();
     int small_warps = m_warp_size/simd_size;

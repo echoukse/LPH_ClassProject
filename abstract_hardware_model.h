@@ -33,6 +33,7 @@ extern int lph_simd_size;
 #define PRINT false
 #define NORMALWARP 0
 #define LARGE_WARP 1
+#define PAPER_LARGE_WARP 0
 // Forward declarations
 class gpgpu_sim;
 class kernel_info_t;
@@ -910,7 +911,8 @@ public:
         m_per_scalar_thread[lane_id].callback.thread = thread;
     }
     void set_active( const active_mask_t &active );
-
+    void reset_active(); //ESHA_CHANGED
+    void set_lane_active( unsigned lane_id); //ESHA_CHANGED
     void clear_active( const active_mask_t &inactive );
     void set_not_active( unsigned lane_id );
 
