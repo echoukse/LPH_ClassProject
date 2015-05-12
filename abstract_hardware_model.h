@@ -32,8 +32,8 @@ extern int lph_simd_size;
 
 #define PRINT false
 #define NORMALWARP 0
-#define LARGE_WARP 1
-#define PAPER_LARGE_WARP 0
+#define LARGE_WARP 0
+#define PAPER_LARGE_WARP 1
 // Forward declarations
 class gpgpu_sim;
 class kernel_info_t;

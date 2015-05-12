@@ -419,9 +419,9 @@ void warp_inst_t::generate_mem_accesses() //ESHA: EC: Read this function! This i
 				temp.second.reset();
 			}    
         }
-#endif
 
-#if NORMALWARP == 1
+
+#else
        for( a=accesses.begin(); a != accesses.end(); ++a ) 
            m_accessq.push_back( mem_access_t(access_type,a->first,cache_block_size,is_write,a->second,byte_mask) );
 #endif
@@ -544,9 +544,9 @@ void warp_inst_t::memory_coalescing_arch_13( bool is_write, mem_access_type acce
 				temp.second.active.reset(); 
 			}  
   		}
-#endif
 
-#if NORMALWARP == 1
+
+#else
 		// step 2: reduce each transaction size, if possible
 		std::map< new_addr_type, transaction_info >::iterator t;
 		for( t=subwarp_transactions.begin(); t !=subwarp_transactions.end(); t++ ) 
@@ -676,9 +676,9 @@ void warp_inst_t::memory_coalescing_arch_13_atomic( bool is_write, mem_access_ty
 					temp.active.reset(); 
 				} 
 			}
-#endif
 
-#if NORMALWARP == 1
+
+#else
 			/*[Ali]: Kishore, shouldn't this part be commented?*/
 			/*[Ali]: not anymore after adding directives*/
 	   		for(t=transaction_list.begin(); t!=transaction_list.end(); t++) 
@@ -1019,10 +1019,10 @@ void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
             }
         }
     }
-#endif
+
     //printf("ESHA_CHANGED: #small warps in a alarge warp is %d\n", small_warps);
     
-#if NORMALWARP == 1 //changed from NORMAL as in the project there is an enum with same name which was causing error while compiling
+#else  //changed from NORMAL as in the project there is an enum with same name which was causing error while compiling
     for ( unsigned t=0; t < m_warp_size; t++ ) {
         if( inst.active(t) ) {
             if(warpId==(unsigned (-1)))
