@@ -1,0 +1,1774 @@
+
+
+        *** GPGPU-Sim Simulator Version 3.2.2  [build 0] ***
+
+
+GPGPU-Sim PTX: simulation mode 0 (can change with PTX_SIM_MODE_FUNC environment variable:
+               1=functional simulation only, 0=detailed performance simulator)
+GPGPU-Sim: Configuration options:
+
+-network_mode                           1 # Interconnection network mode
+-inter_config_file   config_fermi_islip.icnt # Interconnection network config file
+-gpgpu_ptx_use_cuobjdump                    1 # Use cuobjdump to extract ptx and sass from binaries
+-gpgpu_experimental_lib_support                    0 # Try to extract code from cuda libraries [Broken because of unknown cudaGetExportTable]
+-gpgpu_ptx_convert_to_ptxplus                    0 # Convert SASS (native ISA) to ptxplus and run ptxplus
+-gpgpu_ptx_force_max_capability                   20 # Force maximum compute capability
+-gpgpu_ptx_inst_debug_to_file                    0 # Dump executed instructions' debug information to file
+-gpgpu_ptx_inst_debug_file       inst_debug.txt # Executed instructions' debug output file
+-gpgpu_ptx_inst_debug_thread_uid                    1 # Thread UID for executed instructions' debug output
+-gpgpu_simd_model                       1 # 1 = post-dominator
+-gpgpu_shader_core_pipeline          1536:256:32 # shader core pipeline config, i.e., {<nthread>:<warpsize>}
+-gpgpu_tex_cache:l1  4:128:24,L:R:m:N:L,F:128:4,128:2 # per-shader L1 texture cache  (READ-ONLY) config  {<nsets>:<bsize>:<assoc>,<rep>:<wr>:<alloc>:<wr_alloc>,<mshr>:<N>:<merge>,<mq>:<rf>}
+-gpgpu_const_cache:l1 64:64:2,L:R:f:N:L,A:2:32,4 # per-shader L1 constant memory cache  (READ-ONLY) config  {<nsets>:<bsize>:<assoc>,<rep>:<wr>:<alloc>:<wr_alloc>,<mshr>:<N>:<merge>,<mq>} 
+-gpgpu_cache:il1     4:128:4,L:R:f:N:L,A:2:32,4 # shader L1 instruction cache config  {<nsets>:<bsize>:<assoc>,<rep>:<wr>:<alloc>:<wr_alloc>,<mshr>:<N>:<merge>,<mq>} 
+-gpgpu_cache:dl1     32:128:4,L:L:m:N:H,A:32:8,8 # per-shader L1 data cache config  {<nsets>:<bsize>:<assoc>,<rep>:<wr>:<alloc>:<wr_alloc>,<mshr>:<N>:<merge>,<mq> | none}
+-gpgpu_cache:dl1PrefL1                 none # per-shader L1 data cache config  {<nsets>:<bsize>:<assoc>,<rep>:<wr>:<alloc>:<wr_alloc>,<mshr>:<N>:<merge>,<mq> | none}
+-gpgpu_cache:dl1PreShared                 none # per-shader L1 data cache config  {<nsets>:<bsize>:<assoc>,<rep>:<wr>:<alloc>:<wr_alloc>,<mshr>:<N>:<merge>,<mq> | none}
+-gmem_skip_L1D                          0 # global memory access skip L1D cache (implements -Xptxas -dlcm=cg, default=no skip)
+-gpgpu_perfect_mem                      0 # enable perfect memory mode (no cache miss)
+-n_regfile_gating_group                    4 # group of lanes that should be read/written together)
+-gpgpu_clock_gated_reg_file                    0 # enable clock gated reg file for power calculations
+-gpgpu_clock_gated_lanes                    0 # enable clock gated lanes for power calculations
+-gpgpu_shader_registers                32768 # Number of registers per shader core. Limits number of concurrent CTAs. (default 8192)
+-gpgpu_shader_cta                       8 # Maximum number of concurrent CTAs in shader (default 8)
+-gpgpu_num_cta_barriers                   16 # Maximum number of named barriers per CTA (default 16)
+-gpgpu_n_clusters                      15 # number of processing clusters
+-gpgpu_n_cores_per_cluster                    1 # number of simd cores per cluster
+-gpgpu_n_cluster_ejection_buffer_size                    8 # number of packets in ejection buffer
+-gpgpu_n_ldst_response_buffer_size                    2 # number of response packets in ld/st unit ejection buffer
+-gpgpu_shmem_size                   16384 # Size of shared memory per shader core (default 16kB)
+-gpgpu_shmem_size                   49152 # Size of shared memory per shader core (default 16kB)
+-gpgpu_shmem_size_PrefL1                16384 # Size of shared memory per shader core (default 16kB)
+-gpgpu_shmem_size_PrefShared                16384 # Size of shared memory per shader core (default 16kB)
+-gpgpu_shmem_num_banks                   32 # Number of banks in the shared memory in each shader core (default 16)
+-gpgpu_shmem_limited_broadcast                    0 # Limit shared memory to do one broadcast per cycle (default on)
+-gpgpu_shmem_warp_parts                    1 # Number of portions a warp is divided into for shared memory bank conflict check 
+-gpgpu_warpdistro_shader                   -1 # Specify which shader core to collect the warp size distribution from
+-gpgpu_warp_issue_shader                    0 # Specify which shader core to collect the warp issue distribution from
+-gpgpu_local_mem_map                    1 # Mapping from local memory space address to simulated GPU physical address space (default = enabled)
+-gpgpu_num_reg_banks                   16 # Number of register banks (default = 8)
+-gpgpu_reg_bank_use_warp_id                    0 # Use warp ID in mapping registers to banks (default = off)
+-gpgpu_operand_collector_num_units_sp                    6 # number of collector units (default = 4)
+-gpgpu_operand_collector_num_units_sfu                    8 # number of collector units (default = 4)
+-gpgpu_operand_collector_num_units_mem                    2 # number of collector units (default = 2)
+-gpgpu_operand_collector_num_units_gen                    0 # number of collector units (default = 0)
+-gpgpu_operand_collector_num_in_ports_sp                    2 # number of collector unit in ports (default = 1)
+-gpgpu_operand_collector_num_in_ports_sfu                    1 # number of collector unit in ports (default = 1)
+-gpgpu_operand_collector_num_in_ports_mem                    1 # number of collector unit in ports (default = 1)
+-gpgpu_operand_collector_num_in_ports_gen                    0 # number of collector unit in ports (default = 0)
+-gpgpu_operand_collector_num_out_ports_sp                    2 # number of collector unit in ports (default = 1)
+-gpgpu_operand_collector_num_out_ports_sfu                    1 # number of collector unit in ports (default = 1)
+-gpgpu_operand_collector_num_out_ports_mem                    1 # number of collector unit in ports (default = 1)
+-gpgpu_operand_collector_num_out_ports_gen                    0 # number of collector unit in ports (default = 0)
+-gpgpu_coalesce_arch                   13 # Coalescing arch (default = 13, anything else is off for now)
+-gpgpu_num_sched_per_core                    1 # Number of warp schedulers per core
+-gpgpu_max_insn_issue_per_warp                    1 # Max number of instructions that can be issued per warp in one cycle by scheduler
+-gpgpu_simt_core_sim_order                    1 # Select the simulation order of cores in a cluster (0=Fix, 1=Round-Robin)
+-gpgpu_pipeline_widths        2,1,1,2,1,1,2 # Pipeline widths ID_OC_SP,ID_OC_SFU,ID_OC_MEM,OC_EX_SP,OC_EX_SFU,OC_EX_MEM,EX_WB
+-gpgpu_num_sp_units                     2 # Number of SP units (default=1)
+-gpgpu_num_sfu_units                    1 # Number of SF units (default=1)
+-gpgpu_num_mem_units                    1 # Number if ldst units (default=1) WARNING: not hooked up to anything
+-gpgpu_scheduler                      gto # Scheduler configuration: < lrr | gto | two_level_active > If two_level_active:<num_active_warps>:<inner_prioritization>:<outer_prioritization>For complete list of prioritization values see shader.h enum scheduler_prioritization_typeDefault: gto
+-gpgpu_dram_scheduler                    1 # 0 = fifo, 1 = FR-FCFS (defaul)
+-gpgpu_dram_partition_queues              8:8:8:8 # i2$:$2d:d2$:$2i
+-l2_ideal                               0 # Use a ideal L2 cache that always hit
+-gpgpu_cache:dl2     64:128:8,L:B:m:W:L,A:32:4,4:0,32 # unified banked L2 data cache config  {<nsets>:<bsize>:<assoc>,<rep>:<wr>:<alloc>:<wr_alloc>,<mshr>:<N>:<merge>,<mq>}
+-gpgpu_cache:dl2_texture_only                    0 # L2 cache used for texture only
+-gpgpu_n_mem                            6 # number of memory modules (e.g. memory controllers) in gpu
+-gpgpu_n_sub_partition_per_mchannel                    2 # number of memory subpartition in each memory module
+-gpgpu_n_mem_per_ctrlr                    2 # number of memory chips per memory controller
+-gpgpu_memlatency_stat                   14 # track and display latency statistics 0x2 enables MC, 0x4 enables queue logs
+-gpgpu_frfcfs_dram_sched_queue_size                   16 # 0 = unlimited (default); # entries per chip
+-gpgpu_dram_return_queue_size                  116 # 0 = unlimited (default); # entries per chip
+-gpgpu_dram_buswidth                    4 # default = 4 bytes (8 bytes per cycle at DDR)
+-gpgpu_dram_burst_length                    8 # Burst length of each DRAM request (default = 4 data bus cycle)
+-dram_data_command_freq_ratio                    4 # Frequency ratio between DRAM data bus and command bus (default = 2 times, i.e. DDR)
+-gpgpu_dram_timing_opt nbk=16:CCD=2:RRD=6:RCD=12:RAS=28:RP=12:RC=40: CL=12:WL=4:CDLR=5:WR=12:nbkgrp=4:CCDL=3:RTPL=2 # DRAM timing parameters = {nbk:tCCD:tRRD:tRCD:tRAS:tRP:tRC:CL:WL:tCDLR:tWR:nbkgrp:tCCDL:tRTPL}
+-rop_latency                          120 # ROP queue latency (default 85)
+-dram_latency                         100 # DRAM latency (default 30)
+-gpgpu_mem_addr_mapping dramid@8;00000000.00000000.00000000.00000000.0000RRRR.RRRRRRRR.BBBCCCCB.CCSSSSSS # mapping memory address to dram model {dramid@<start bit>;<memory address map>}
+-gpgpu_mem_addr_test                    0 # run sweep test to check address mapping for aliased address
+-gpgpu_mem_address_mask                    1 # 0 = old addressing mask, 1 = new addressing mask, 2 = new add. mask + flipped bank sel and chip sel bits
+-gpuwattch_xml_file  gpuwattch_gtx480.xml # GPUWattch XML file
+-power_simulation_enabled                    1 # Turn on power simulator (1=On, 0=Off)
+-power_per_cycle_dump                    0 # Dump detailed power output each cycle
+-power_trace_enabled                    0 # produce a file for the power trace (1=On, 0=Off)
+-power_trace_zlevel                     6 # Compression level of the power trace output log (0=no comp, 9=highest)
+-steady_power_levels_enabled                    0 # produce a file for the steady power levels (1=On, 0=Off)
+-steady_state_definition                  8:4 # allowed deviation:number of samples
+-gpgpu_max_cycle                        0 # terminates gpu simulation early (0 = no limit)
+-gpgpu_max_insn                         0 # terminates gpu simulation early (0 = no limit)
+-gpgpu_max_cta                          0 # terminates gpu simulation early (0 = no limit)
+-gpgpu_runtime_stat                   500 # display runtime statistics such as dram utilization {<freq>:<flag>}
+-liveness_message_freq                    1 # Minimum number of seconds between simulation liveness messages (0 = always print)
+-gpgpu_flush_l1_cache                    0 # Flush L1 cache at the end of each kernel call
+-gpgpu_flush_l2_cache                    0 # Flush L2 cache at the end of each kernel call
+-gpgpu_deadlock_detect                    1 # Stop the simulation at deadlock (1=on (default), 0=off)
+-gpgpu_ptx_instruction_classification                    0 # if enabled will classify ptx instruction types per kernel (Max 255 kernels now)
+-gpgpu_ptx_sim_mode                     0 # Select between Performance (default) or Functional simulation (1)
+-gpgpu_clock_domains 700.0:700.0:700.0:924.0 # Clock Domain Frequencies in MhZ {<Core Clock>:<ICNT Clock>:<L2 Clock>:<DRAM Clock>}
+-gpgpu_max_concurrent_kernel                    8 # maximum kernels that can run concurrently on GPU
+-gpgpu_cflog_interval                    0 # Interval between each snapshot in control flow logger
+-visualizer_enabled                     0 # Turn on visualizer output (1=On, 0=Off)
+-visualizer_outputfile                 NULL # Specifies the output log file for visualizer
+-visualizer_zlevel                      6 # Compression level of the visualizer output log (0=no comp, 9=highest)
+-trace_enabled                          0 # Turn on traces
+-trace_components                    none # comma seperated list of traces to enable. Complete list found in trace_streams.tup. Default none
+-trace_sampling_core                    0 # The core which is printed using CORE_DPRINTF. Default 0
+-trace_sampling_memory_partition                   -1 # The memory partition which is printed using MEMPART_DPRINTF. Default -1 (i.e. all)
+-enable_ptx_file_line_stats                    1 # Turn on PTX source line statistic profiling. (1 = On)
+-ptx_line_stats_filename gpgpu_inst_stats.txt # Output file for PTX source line statistics.
+-save_embedded_ptx                      0 # saves ptx files embedded in binary as <n>.ptx
+-keep                                   0 # keep intermediate files created by GPGPU-Sim when interfacing with external programs
+-gpgpu_ptx_save_converted_ptxplus                    0 # Saved converted ptxplus to a file
+-ptx_opcode_latency_int         4,13,4,5,145 # Opcode latencies for integers <ADD,MAX,MUL,MAD,DIV>Default 1,1,19,25,145
+-ptx_opcode_latency_fp          4,13,4,5,39 # Opcode latencies for single precision floating points <ADD,MAX,MUL,MAD,DIV>Default 1,1,1,1,30
+-ptx_opcode_latency_dp         8,19,8,8,330 # Opcode latencies for double precision floating points <ADD,MAX,MUL,MAD,DIV>Default 8,8,8,8,335
+-ptx_opcode_initiation_int            1,2,2,1,8 # Opcode initiation intervals for integers <ADD,MAX,MUL,MAD,DIV>Default 1,1,4,4,32
+-ptx_opcode_initiation_fp            1,2,1,1,4 # Opcode initiation intervals for single precision floating points <ADD,MAX,MUL,MAD,DIV>Default 1,1,1,1,5
+-ptx_opcode_initiation_dp         8,16,8,8,130 # Opcode initiation intervals for double precision floating points <ADD,MAX,MUL,MAD,DIV>Default 8,8,8,8,130
+ESHA: SIMD Width was found to be : 32
+DRAM Timing Options:
+nbk                                    16 # number of banks
+CCD                                     2 # column to column delay
+RRD                                     6 # minimal delay between activation of rows in different banks
+RCD                                    12 # row to column delay
+RAS                                    28 # time needed to activate row
+RP                                     12 # time needed to precharge (deactivate) row
+RC                                     40 # row cycle time
+CDLR                                    5 # switching from write to read (changes tWTR)
+WR                                     12 # last data-in to row precharge
+CL                                     12 # CAS latency
+WL                                      4 # Write latency
+nbkgrp                                  4 # number of bank groups
+CCDL                                    3 # column to column delay between accesses to different bank groups
+RTPL                                    2 # read to precharge delay between accesses to different bank groups
+Total number of memory sub partition = 12
+addr_dec_mask[CHIP]  = 0000000000000000 	high:64 low:0
+addr_dec_mask[BK]    = 000000000000e100 	high:16 low:8
+addr_dec_mask[ROW]   = 000000000fff0000 	high:28 low:16
+addr_dec_mask[COL]   = 0000000000001eff 	high:13 low:0
+addr_dec_mask[BURST] = 000000000000003f 	high:6 low:0
+sub_partition_id_mask = 0000000000000100
+GPGPU-Sim uArch: clock freqs: 700000000.000000:700000000.000000:700000000.000000:924000000.000000
+GPGPU-Sim uArch: clock periods: 0.00000000142857142857:0.00000000142857142857:0.00000000142857142857:0.00000000108225108225
+ESHA_CHANGED: in shader config simd is  32 
+*** Initializing Memory Statistics ***
+GPGPU-Sim uArch: interconnect node map (shaderID+MemID to icntID)
+GPGPU-Sim uArch: Memory nodes ID start from index: 15
+GPGPU-Sim uArch:    0   1   2   3   4
+GPGPU-Sim uArch:    5   6   7   8   9
+GPGPU-Sim uArch:   10  11  12  13  14
+GPGPU-Sim uArch:   15  16  17  18  19
+GPGPU-Sim uArch:   20  21  22  23  24
+GPGPU-Sim uArch:   25  26
+GPGPU-Sim uArch: interconnect node reverse map (icntID to shaderID+MemID)
+GPGPU-Sim uArch: Memory nodes start from ID: 15
+GPGPU-Sim uArch:    0   1   2   3   4
+GPGPU-Sim uArch:    5   6   7   8   9
+GPGPU-Sim uArch:   10  11  12  13  14
+GPGPU-Sim uArch:   15  16  17  18  19
+GPGPU-Sim uArch:   20  21  22  23  24
+GPGPU-Sim uArch:   25  26
+eb5b2248bb56c0855732ae404017953f  /home/kishore/project_source/gpu_class_proj/gpgpusim-benchmarks-master/bin/release/AES
+GPGPU-Sim uArch: performance model initialization complete.
+GPGPU-Sim PTX: __cudaRegisterFatBinary, fat_cubin_handle = 1, filename=aesHost.cu
+self exe links to: /home/kishore/project_source/gpu_class_proj/gpgpusim-benchmarks-master/bin/release/AES
+Running md5sum using "md5sum /home/kishore/project_source/gpu_class_proj/gpgpusim-benchmarks-master/bin/release/AES "
+Running cuobjdump using "$CUDA_INSTALL_PATH/bin/cuobjdump -ptx -elf -sass /home/kishore/project_source/gpu_class_proj/gpgpusim-benchmarks-master/bin/release/AES > _cuobjdump_complete_output_lISxKj"
+Parsing file _cuobjdump_complete_output_lISxKj
+######### cuobjdump parser ########
+## Adding new section ELF
+Adding arch: sm_10
+Adding identifier: aesHost.cu
+## Adding new section PTX
+Adding ptx filename: _cuobjdump_1.ptx
+Adding arch: sm_10
+Adding identifier: aesHost.cu
+## Adding new section ELF
+Adding arch: sm_20
+Adding identifier: aesHost.cu
+## Adding new section PTX
+Adding ptx filename: _cuobjdump_2.ptx
+Adding arch: sm_20
+Adding identifier: aesHost.cu
+Done parsing!!!
+GPGPU-Sim PTX: __cudaRegisterFunction _Z13aesDecrypt256PjS_i : hostFun 0x0x4081d0, fat_cubin_handle = 1
+GPGPU-Sim PTX: allocating global region for "texEKey128" from 0x100 to 0x104 (global memory space)
+GPGPU-Sim PTX: allocating constant region for "posIdx_E" from 0x120 to 0x140 (global memory space) 1
+GPGPU-Sim PTX: allocating constant region for "TBox0" from 0x180 to 0x580 (global memory space) 2
+GPGPU-Sim PTX: allocating constant region for "TBox1" from 0x580 to 0x980 (global memory space) 3
+GPGPU-Sim PTX: allocating constant region for "TBox2" from 0x980 to 0xd80 (global memory space) 4
+GPGPU-Sim PTX: allocating constant region for "TBox3" from 0xd80 to 0x1180 (global memory space) 5
+GPGPU-Sim PTX: allocating shared region for "__cuda___cuda_local_var_34617_33_non_const_tBox1Block20" from 0x0 to 0x400 (shared memory space)
+GPGPU-Sim PTX: allocating shared region for "__cuda___cuda_local_var_34619_33_non_const_tBox3Block1044" from 0x400 to 0x800 (shared memory space)
+GPGPU-Sim PTX: allocating shared region for "__cuda___cuda_local_var_34612_36_non_const_stageBlock12068" from 0x800 to 0xc00 (shared memory space)
+GPGPU-Sim PTX: allocating shared region for "__cuda___cuda_local_var_34616_33_non_const_tBox0Block3092" from 0xc00 to 0x1000 (shared memory space)
+GPGPU-Sim PTX: allocating shared region for "__cuda___cuda_local_var_34618_33_non_const_tBox2Block4116" from 0x1000 to 0x1400 (shared memory space)
+GPGPU-Sim PTX: allocating shared region for "__cuda___cuda_local_var_34613_33_non_const_stageBlock25140" from 0x1400 to 0x1800 (shared memory space)
+GPGPU-Sim PTX: instruction assembly for function '_Z13aesEncrypt128PjS_i'...   done.
+GPGPU-Sim PTX: finding reconvergence points for '_Z13aesEncrypt128PjS_i'...
+GPGPU-Sim PTX: Finding dominators for '_Z13aesEncrypt128PjS_i'...
+GPGPU-Sim PTX: Finding immediate dominators for '_Z13aesEncrypt128PjS_i'...
+GPGPU-Sim PTX: Finding postdominators for '_Z13aesEncrypt128PjS_i'...
+GPGPU-Sim PTX: Finding immediate postdominators for '_Z13aesEncrypt128PjS_i'...
+GPGPU-Sim PTX: pre-decoding instructions for '_Z13aesEncrypt128PjS_i'...
+GPGPU-Sim PTX: reconvergence points for _Z13aesEncrypt128PjS_i...
+GPGPU-Sim PTX: ... end of reconvergence points for _Z13aesEncrypt128PjS_i
+GPGPU-Sim PTX: ... done pre-decoding instructions for '_Z13aesEncrypt128PjS_i'.
+GPGPU-Sim PTX: allocating global region for "texDKey128" from 0x1180 to 0x1184 (global memory space)
+GPGPU-Sim PTX: allocating constant region for "posIdx_D" from 0x11a0 to 0x11c0 (global memory space) 6
+GPGPU-Sim PTX: allocating constant region for "TBoxi0" from 0x1200 to 0x1600 (global memory space) 7
+GPGPU-Sim PTX: allocating constant region for "TBoxi1" from 0x1600 to 0x1a00 (global memory space) 8
+GPGPU-Sim PTX: allocating constant region for "TBoxi2" from 0x1a00 to 0x1e00 (global memory space) 9
+GPGPU-Sim PTX: allocating constant region for "TBoxi3" from 0x1e00 to 0x2200 (global memory space) 10
+GPGPU-Sim PTX: allocating constant region for "inv_SBox" from 0x2200 to 0x2600 (global memory space) 11
+GPGPU-Sim PTX: allocating shared region for "__cuda___cuda_local_var_34973_36_non_const_tBox1Block6188" from 0x0 to 0x400 (shared memory space)
+GPGPU-Sim PTX: allocating shared region for "__cuda___cuda_local_var_34975_36_non_const_tBox3Block7212" from 0x400 to 0x800 (shared memory space)
+GPGPU-Sim PTX: allocating shared region for "__cuda___cuda_local_var_34970_36_non_const_stageBlock18236" from 0x800 to 0xc00 (shared memory space)
+GPGPU-Sim PTX: allocating shared region for "__cuda___cuda_local_var_34972_36_non_const_tBox0Block9260" from 0xc00 to 0x1000 (shared memory space)
+GPGPU-Sim PTX: allocating shared region for "__cuda___cuda_local_var_34974_36_non_const_tBox2Block10284" from 0x1000 to 0x1400 (shared memory space)
+GPGPU-Sim PTX: allocating shared region for "__cuda___cuda_local_var_34976_36_non_const_invSBoxBlock11308" from 0x1400 to 0x1800 (shared memory space)
+GPGPU-Sim PTX: allocating shared region for "__cuda___cuda_local_var_34971_33_non_const_stageBlock212332" from 0x1800 to 0x1c00 (shared memory space)
+GPGPU-Sim PTX: instruction assembly for function '_Z13aesDecrypt128PjS_i'...   done.
+GPGPU-Sim PTX: finding reconvergence points for '_Z13aesDecrypt128PjS_i'...
+GPGPU-Sim PTX: Finding dominators for '_Z13aesDecrypt128PjS_i'...
+GPGPU-Sim PTX: Finding immediate dominators for '_Z13aesDecrypt128PjS_i'...
+GPGPU-Sim PTX: Finding postdominators for '_Z13aesDecrypt128PjS_i'...
+GPGPU-Sim PTX: Finding immediate postdominators for '_Z13aesDecrypt128PjS_i'...
+GPGPU-Sim PTX: pre-decoding instructions for '_Z13aesDecrypt128PjS_i'...
+GPGPU-Sim PTX: reconvergence points for _Z13aesDecrypt128PjS_i...
+GPGPU-Sim PTX: ... end of reconvergence points for _Z13aesDecrypt128PjS_i
+GPGPU-Sim PTX: ... done pre-decoding instructions for '_Z13aesDecrypt128PjS_i'.
+GPGPU-Sim PTX: allocating global region for "texEKey" from 0x2600 to 0x2604 (global memory space)
+GPGPU-Sim PTX: allocating shared region for "__cuda___cuda_local_var_35328_33_non_const_tBox0Block13380" from 0x0 to 0x400 (shared memory space)
+GPGPU-Sim PTX: allocating shared region for "__cuda___cuda_local_var_35330_33_non_const_tBox2Block14404" from 0x400 to 0x800 (shared memory space)
+GPGPU-Sim PTX: allocating shared region for "__cuda___cuda_local_var_35329_33_non_const_tBox1Block15428" from 0x800 to 0xc00 (shared memory space)
+GPGPU-Sim PTX: allocating shared region for "__cuda___cuda_local_var_35331_33_non_const_tBox3Block16452" from 0xc00 to 0x1000 (shared memory space)
+GPGPU-Sim PTX: allocating shared region for "__cuda___cuda_local_var_35324_36_non_const_stageBlock117476" from 0x1000 to 0x1400 (shared memory space)
+GPGPU-Sim PTX: allocating shared region for "__cuda___cuda_local_var_35325_33_non_const_stageBlock218500" from 0x1400 to 0x1800 (shared memory space)
+GPGPU-Sim PTX: instruction assembly for function '_Z13aesEncrypt256PjS_i'...   done.
+GPGPU-Sim PTX: finding reconvergence points for '_Z13aesEncrypt256PjS_i'...
+GPGPU-Sim PTX: Finding dominators for '_Z13aesEncrypt256PjS_i'...
+GPGPU-Sim PTX: Finding immediate dominators for '_Z13aesEncrypt256PjS_i'...
+GPGPU-Sim PTX: Finding postdominators for '_Z13aesEncrypt256PjS_i'...
+GPGPU-Sim PTX: Finding immediate postdominators for '_Z13aesEncrypt256PjS_i'...
+GPGPU-Sim PTX: pre-decoding instructions for '_Z13aesEncrypt256PjS_i'...
+GPGPU-Sim PTX: reconvergence points for _Z13aesEncrypt256PjS_i...
+GPGPU-Sim PTX: ... end of reconvergence points for _Z13aesEncrypt256PjS_i
+GPGPU-Sim PTX: ... done pre-decoding instructions for '_Z13aesEncrypt256PjS_i'.
+GPGPU-Sim PTX: allocating global region for "texDKey" from 0x2604 to 0x2608 (global memory space)
+GPGPU-Sim PTX: allocating shared region for "__cuda___cuda_local_var_35775_36_non_const_tBox0Block19548" from 0x0 to 0x400 (shared memory space)
+GPGPU-Sim PTX: allocating shared region for "__cuda___cuda_local_var_35777_36_non_const_tBox2Block20572" from 0x400 to 0x800 (shared memory space)
+GPGPU-Sim PTX: allocating shared region for "__cuda___cuda_local_var_35779_36_non_const_invSBoxBlock21596" from 0x800 to 0xc00 (shared memory space)
+GPGPU-Sim PTX: allocating shared region for "__cuda___cuda_local_var_35776_36_non_const_tBox1Block22620" from 0xc00 to 0x1000 (shared memory space)
+GPGPU-Sim PTX: allocating shared region for "__cuda___cuda_local_var_35778_36_non_const_tBox3Block23644" from 0x1000 to 0x1400 (shared memory space)
+GPGPU-Sim PTX: allocating shared region for "__cuda___cuda_local_var_35773_36_non_const_stageBlock124668" from 0x1400 to 0x1800 (shared memory space)
+GPGPU-Sim PTX: allocating shared region for "__cuda___cuda_local_var_35774_33_non_const_stageBlock225692" from 0x1800 to 0x1c00 (shared memory space)
+GPGPU-Sim PTX: instruction assembly for function '_Z13aesDecrypt256PjS_i'...   done.
+GPGPU-Sim PTX: finding reconvergence points for '_Z13aesDecrypt256PjS_i'...
+GPGPU-Sim PTX: Finding dominators for '_Z13aesDecrypt256PjS_i'...
+GPGPU-Sim PTX: Finding immediate dominators for '_Z13aesDecrypt256PjS_i'...
+GPGPU-Sim PTX: Finding postdominators for '_Z13aesDecrypt256PjS_i'...
+GPGPU-Sim PTX: Finding immediate postdominators for '_Z13aesDecrypt256PjS_i'...
+GPGPU-Sim PTX: pre-decoding instructions for '_Z13aesDecrypt256PjS_i'...
+GPGPU-Sim PTX: reconvergence points for _Z13aesDecrypt256PjS_i...
+GPGPU-Sim PTX: ... end of reconvergence points for _Z13aesDecrypt256PjS_i
+GPGPU-Sim PTX: ... done pre-decoding instructions for '_Z13aesDecrypt256PjS_i'.
+GPGPU-Sim PTX: finished parsing EMBEDDED .ptx file _1.ptx
+Adding _cuobjdump_2.ptx with cubin handle 1
+GPGPU-Sim PTX: extracting embedded .ptx to temporary file "_ptx_c3eVMn"
+Running: cat _ptx_c3eVMn | sed 's/.version 1.5/.version 1.4/' | sed 's/, texmode_independent//' | sed 's/\(\.extern \.const\[1\] .b8 \w\+\)\[\]/\1\[1\]/' | sed 's/const\[.\]/const\[0\]/g' > _ptx2_9QFkPr
+GPGPU-Sim PTX: generating ptxinfo using "$CUDA_INSTALL_PATH/bin/ptxas --gpu-name=sm_20 -v _ptx2_9QFkPr --output-file  /dev/null 2> _ptx_c3eVMninfo"
+GPGPU-Sim PTX: Kernel '_Z13aesDecrypt256PjS_i' : regs=15, lmem=0, smem=7168, cmem=9332
+GPGPU-Sim PTX: Kernel '_Z13aesEncrypt256PjS_i' : regs=15, lmem=0, smem=6144, cmem=9332
+GPGPU-Sim PTX: Kernel '_Z13aesDecrypt128PjS_i' : regs=15, lmem=0, smem=7168, cmem=9332
+GPGPU-Sim PTX: Kernel '_Z13aesEncrypt128PjS_i' : regs=15, lmem=0, smem=6144, cmem=9332
+GPGPU-Sim PTX: removing ptxinfo using "rm -f _ptx_c3eVMn _ptx2_9QFkPr _ptx_c3eVMninfo"
+GPGPU-Sim PTX: loading globals with explicit initializers... 
+GPGPU-Sim PTX: finished loading globals (0 bytes total).
+GPGPU-Sim PTX: loading constants with explicit initializers...  done.
+GPGPU-Sim PTX: __cudaRegisterFunction _Z13aesEncrypt256PjS_i : hostFun 0x0x408260, fat_cubin_handle = 1
+GPGPU-Sim PTX: __cudaRegisterFunction _Z13aesDecrypt128PjS_i : hostFun 0x0x4082f0, fat_cubin_handle = 1
+GPGPU-Sim PTX: __cudaRegisterFunction _Z13aesEncrypt128PjS_i : hostFun 0x0x408380, fat_cubin_handle = 1
+GPGPU-Sim PTX: __cudaRegisterVar: hostVar = 0x65f3a0; deviceAddress = posIdx_E; deviceName = posIdx_E
+GPGPU-Sim PTX: __cudaRegisterVar: Registering const memory space of 32 bytes
+GPGPU-Sim PTX registering constant posIdx_E (32 bytes) to name mapping
+GPGPU-Sim PTX: __cudaRegisterVar: hostVar = 0x65f3c0; deviceAddress = TBox0; deviceName = TBox0
+GPGPU-Sim PTX: __cudaRegisterVar: Registering const memory space of 1024 bytes
+GPGPU-Sim PTX registering constant TBox0 (1024 bytes) to name mapping
+GPGPU-Sim PTX: __cudaRegisterVar: hostVar = 0x65f7c0; deviceAddress = TBox1; deviceName = TBox1
+GPGPU-Sim PTX: __cudaRegisterVar: Registering const memory space of 1024 bytes
+GPGPU-Sim PTX registering constant TBox1 (1024 bytes) to name mapping
+GPGPU-Sim PTX: __cudaRegisterVar: hostVar = 0x65fbc0; deviceAddress = TBox2; deviceName = TBox2
+GPGPU-Sim PTX: __cudaRegisterVar: Registering const memory space of 1024 bytes
+GPGPU-Sim PTX registering constant TBox2 (1024 bytes) to name mapping
+GPGPU-Sim PTX: __cudaRegisterVar: hostVar = 0x65ffc0; deviceAddress = TBox3; deviceName = TBox3
+GPGPU-Sim PTX: __cudaRegisterVar: Registering const memory space of 1024 bytes
+GPGPU-Sim PTX registering constant TBox3 (1024 bytes) to name mapping
+GPGPU-Sim PTX: __cudaRegisterVar: hostVar = 0x6603c0; deviceAddress = posIdx_D; deviceName = posIdx_D
+GPGPU-Sim PTX: __cudaRegisterVar: Registering const memory space of 32 bytes
+GPGPU-Sim PTX registering constant posIdx_D (32 bytes) to name mapping
+GPGPU-Sim PTX: __cudaRegisterVar: hostVar = 0x6603e0; deviceAddress = TBoxi0; deviceName = TBoxi0
+GPGPU-Sim PTX: __cudaRegisterVar: Registering const memory space of 1024 bytes
+GPGPU-Sim PTX registering constant TBoxi0 (1024 bytes) to name mapping
+GPGPU-Sim PTX: __cudaRegisterVar: hostVar = 0x6607e0; deviceAddress = TBoxi1; deviceName = TBoxi1
+GPGPU-Sim PTX: __cudaRegisterVar: Registering const memory space of 1024 bytes
+GPGPU-Sim PTX registering constant TBoxi1 (1024 bytes) to name mapping
+GPGPU-Sim PTX: __cudaRegisterVar: hostVar = 0x660be0; deviceAddress = TBoxi2; deviceName = TBoxi2
+GPGPU-Sim PTX: __cudaRegisterVar: Registering const memory space of 1024 bytes
+GPGPU-Sim PTX registering constant TBoxi2 (1024 bytes) to name mapping
+GPGPU-Sim PTX: __cudaRegisterVar: hostVar = 0x660fe0; deviceAddress = TBoxi3; deviceName = TBoxi3
+GPGPU-Sim PTX: __cudaRegisterVar: Registering const memory space of 1024 bytes
+GPGPU-Sim PTX registering constant TBoxi3 (1024 bytes) to name mapping
+GPGPU-Sim PTX: __cudaRegisterVar: hostVar = 0x6613e0; deviceAddress = inv_SBox; deviceName = inv_SBox
+GPGPU-Sim PTX: __cudaRegisterVar: Registering const memory space of 1024 bytes
+GPGPU-Sim PTX registering constant inv_SBox (1024 bytes) to name mapping
+GPGPU-Sim PTX: in __cudaRegisterTexture:
+GPGPU-Sim PTX:   int dim = 1
+GPGPU-Sim PTX:   int norm = 0
+GPGPU-Sim PTX:   int ext = 0
+GPGPU-Sim PTX:   Execution warning: Not finished implementing "void __cudaRegisterTexture(void**, const textureReference*, const void**, const char*, int, int, int)"
+GPGPU-Sim PTX: in __cudaRegisterTexture:
+GPGPU-Sim PTX:   int dim = 1
+GPGPU-Sim PTX:   int norm = 0
+GPGPU-Sim PTX:   int ext = 0
+GPGPU-Sim PTX:   Execution warning: Not finished implementing "void __cudaRegisterTexture(void**, const textureReference*, const void**, const char*, int, int, int)"
+GPGPU-Sim PTX: in __cudaRegisterTexture:
+GPGPU-Sim PTX:   int dim = 1
+GPGPU-Sim PTX:   int norm = 0
+GPGPU-Sim PTX:   int ext = 0
+GPGPU-Sim PTX:   Execution warning: Not finished implementing "void __cudaRegisterTexture(void**, const textureReference*, const void**, const char*, int, int, int)"
+GPGPU-Sim PTX: in __cudaRegisterTexture:
+GPGPU-Sim PTX:   int dim = 1
+GPGPU-Sim PTX:   int norm = 0
+GPGPU-Sim PTX:   int ext = 0
+GPGPU-Sim PTX:   Execution warning: Not finished implementing "void __cudaRegisterTexture(void**, const textureReference*, const void**, const char*, int, int, int)"
+
+###############################################################
+
+AES - CUDA by Svetlin Manavski)
+
+AES 128 is running....
+
+Input file size: 262198 Bytes
+
+Key: 0123456789abcdef
+GPGPU-Sim PTX: in cudaBindTexture: sizeof(struct textureReference) = 104
+GPGPU-Sim PTX:   size = 176
+GPGPU-Sim PTX:   texref = 0x65f1a0, array = 0x162a0e0
+GPGPU-Sim PTX:   devPtr32 = 80040400
+GPGPU-Sim PTX:   Name corresponding to textureReference: texEKey128
+GPGPU-Sim PTX:   ChannelFormatDesc: x=32, y=0, z=0, w=0
+GPGPU-Sim PTX:   Texture Normalized? = 0
+GPGPU-Sim PTX:   texel size = 4
+GPGPU-Sim PTX:   texture cache linesize = 128
+GPGPU-Sim PTX:   Tx = 8; Ty = 4, Tx_numbits = 3, Ty_numbits = 2
+GPGPU-Sim PTX:   Texel size = 4 bytes; texel_size_numbits = 2
+GPGPU-Sim PTX:   Binding texture to array starting at devPtr32 = 0x80040400
+GPGPU-Sim PTX:   Texel size = 4 bytes
+GPGPU-Sim PTX: devPtr = 0xffffffff80040400
+GPGPU-Sim PTX: in cudaBindTexture: sizeof(struct textureReference) = 104
+GPGPU-Sim PTX:   size = 176
+GPGPU-Sim PTX:   texref = 0x65f220, array = 0x162a1a0
+GPGPU-Sim PTX:   devPtr32 = 80040400
+GPGPU-Sim PTX:   Name corresponding to textureReference: texDKey128
+GPGPU-Sim PTX:   ChannelFormatDesc: x=32, y=0, z=0, w=0
+GPGPU-Sim PTX:   Texture Normalized? = 0
+GPGPU-Sim PTX:   texel size = 4
+GPGPU-Sim PTX:   texture cache linesize = 128
+GPGPU-Sim PTX:   Tx = 8; Ty = 4, Tx_numbits = 3, Ty_numbits = 2
+GPGPU-Sim PTX:   Texel size = 4 bytes; texel_size_numbits = 2
+GPGPU-Sim PTX:   Binding texture to array starting at devPtr32 = 0x80040400
+GPGPU-Sim PTX:   Texel size = 4 bytes
+GPGPU-Sim PTX: devPtr = 0xffffffff80040400
+GPGPU-Sim PTX: in cudaBindTexture: sizeof(struct textureReference) = 104
+GPGPU-Sim PTX:   size = 176
+GPGPU-Sim PTX:   texref = 0x65f2a0, array = 0x162a260
+GPGPU-Sim PTX:   devPtr32 = 80040400
+GPGPU-Sim PTX:   Name corresponding to textureReference: texEKey
+GPGPU-Sim PTX:   ChannelFormatDesc: x=32, y=0, z=0, w=0
+GPGPU-Sim PTX:   Texture Normalized? = 0
+GPGPU-Sim PTX:   texel size = 4
+GPGPU-Sim PTX:   texture cache linesize = 128
+GPGPU-Sim PTX:   Tx = 8; Ty = 4, Tx_numbits = 3, Ty_numbits = 2
+GPGPU-Sim PTX:   Texel size = 4 bytes; texel_size_numbits = 2
+GPGPU-Sim PTX:   Binding texture to array starting at devPtr32 = 0x80040400
+GPGPU-Sim PTX:   Texel size = 4 bytes
+GPGPU-Sim PTX: devPtr = 0xffffffff80040400
+GPGPU-Sim PTX: in cudaBindTexture: sizeof(struct textureReference) = 104
+GPGPU-Sim PTX:   size = 176
+GPGPU-Sim PTX:   texref = 0x65f320, array = 0x162a320
+GPGPU-Sim PTX:   devPtr32 = 80040400
+GPGPU-Sim PTX:   Name corresponding to textureReference: texDKey
+GPGPU-Sim PTX:   ChannelFormatDesc: x=32, y=0, z=0, w=0
+GPGPU-Sim PTX:   Texture Normalized? = 0
+GPGPU-Sim PTX:   texel size = 4
+GPGPU-Sim PTX:   texture cache linesize = 128
+GPGPU-Sim PTX:   Tx = 8; Ty = 4, Tx_numbits = 3, Ty_numbits = 2
+GPGPU-Sim PTX:   Texel size = 4 bytes; texel_size_numbits = 2
+GPGPU-Sim PTX:   Binding texture to array starting at devPtr32 = 0x80040400
+GPGPU-Sim PTX:   Texel size = 4 bytes
+GPGPU-Sim PTX: devPtr = 0xffffffff80040400
+
+ENCRYPTION.....
+
+
+GPGPU-Sim PTX: cudaLaunch for 0x0x408380 (mode=performance simulation) on stream 0
+GPGPU-Sim PTX: pushing kernel '_Z13aesEncrypt128PjS_i' to stream 0, gridDim= (257,1,1) blockDim = (256,1,1) 
+kernel '_Z13aesEncrypt128PjS_i' transfer to GPU hardware scheduler
+GPGPU-Sim uArch: Shader 1 bind to kernel 1 '_Z13aesEncrypt128PjS_i'
+GPGPU-Sim uArch: CTA/core = 6, limited by: threads
+GPGPU-Sim uArch: core:  1, cta: 0 initialized @(1,0)
+GPGPU-Sim uArch: Shader 2 bind to kernel 1 '_Z13aesEncrypt128PjS_i'
+GPGPU-Sim uArch: core:  2, cta: 0 initialized @(1,0)
+GPGPU-Sim uArch: Shader 3 bind to kernel 1 '_Z13aesEncrypt128PjS_i'
+GPGPU-Sim uArch: core:  3, cta: 0 initialized @(1,0)
+GPGPU-Sim uArch: Shader 4 bind to kernel 1 '_Z13aesEncrypt128PjS_i'
+GPGPU-Sim uArch: core:  4, cta: 0 initialized @(1,0)
+GPGPU-Sim uArch: Shader 5 bind to kernel 1 '_Z13aesEncrypt128PjS_i'
+GPGPU-Sim uArch: core:  5, cta: 0 initialized @(1,0)
+GPGPU-Sim uArch: Shader 6 bind to kernel 1 '_Z13aesEncrypt128PjS_i'
+GPGPU-Sim uArch: core:  6, cta: 0 initialized @(1,0)
+GPGPU-Sim uArch: Shader 7 bind to kernel 1 '_Z13aesEncrypt128PjS_i'
+GPGPU-Sim uArch: core:  7, cta: 0 initialized @(1,0)
+GPGPU-Sim uArch: Shader 8 bind to kernel 1 '_Z13aesEncrypt128PjS_i'
+GPGPU-Sim uArch: core:  8, cta: 0 initialized @(1,0)
+GPGPU-Sim uArch: Shader 9 bind to kernel 1 '_Z13aesEncrypt128PjS_i'
+GPGPU-Sim uArch: core:  9, cta: 0 initialized @(1,0)
+GPGPU-Sim uArch: Shader 10 bind to kernel 1 '_Z13aesEncrypt128PjS_i'
+GPGPU-Sim uArch: core: 10, cta: 0 initialized @(1,0)
+GPGPU-Sim uArch: Shader 11 bind to kernel 1 '_Z13aesEncrypt128PjS_i'
+GPGPU-Sim uArch: core: 11, cta: 0 initialized @(1,0)
+GPGPU-Sim uArch: Shader 12 bind to kernel 1 '_Z13aesEncrypt128PjS_i'
+GPGPU-Sim uArch: core: 12, cta: 0 initialized @(1,0)
+GPGPU-Sim uArch: Shader 13 bind to kernel 1 '_Z13aesEncrypt128PjS_i'
+GPGPU-Sim uArch: core: 13, cta: 0 initialized @(1,0)
+GPGPU-Sim uArch: Shader 14 bind to kernel 1 '_Z13aesEncrypt128PjS_i'
+GPGPU-Sim uArch: core: 14, cta: 0 initialized @(1,0)
+GPGPU-Sim uArch: Shader 0 bind to kernel 1 '_Z13aesEncrypt128PjS_i'
+GPGPU-Sim uArch: core:  0, cta: 0 initialized @(1,0)
+GPGPU-Sim uArch: core:  1, cta: 1 initialized @(2,0)
+GPGPU-Sim uArch: core:  2, cta: 1 initialized @(2,0)
+GPGPU-Sim uArch: core:  3, cta: 1 initialized @(2,0)
+GPGPU-Sim uArch: core:  4, cta: 1 initialized @(2,0)
+GPGPU-Sim uArch: core:  5, cta: 1 initialized @(2,0)
+GPGPU-Sim uArch: core:  6, cta: 1 initialized @(2,0)
+GPGPU-Sim uArch: core:  7, cta: 1 initialized @(2,0)
+GPGPU-Sim uArch: core:  8, cta: 1 initialized @(2,0)
+GPGPU-Sim uArch: core:  9, cta: 1 initialized @(2,0)
+GPGPU-Sim uArch: core: 10, cta: 1 initialized @(2,0)
+GPGPU-Sim uArch: core: 11, cta: 1 initialized @(2,0)
+GPGPU-Sim uArch: core: 12, cta: 1 initialized @(2,0)
+GPGPU-Sim uArch: core: 13, cta: 1 initialized @(2,0)
+GPGPU-Sim uArch: core: 14, cta: 1 initialized @(2,0)
+GPGPU-Sim uArch: core:  0, cta: 1 initialized @(2,0)
+GPGPU-Sim uArch: core:  1, cta: 2 initialized @(3,0)
+GPGPU-Sim uArch: core:  2, cta: 2 initialized @(3,0)
+GPGPU-Sim uArch: core:  3, cta: 2 initialized @(3,0)
+GPGPU-Sim uArch: core:  4, cta: 2 initialized @(3,0)
+GPGPU-Sim uArch: core:  5, cta: 2 initialized @(3,0)
+GPGPU-Sim uArch: core:  6, cta: 2 initialized @(3,0)
+GPGPU-Sim uArch: core:  7, cta: 2 initialized @(3,0)
+GPGPU-Sim uArch: core:  8, cta: 2 initialized @(3,0)
+GPGPU-Sim uArch: core:  9, cta: 2 initialized @(3,0)
+GPGPU-Sim uArch: core: 10, cta: 2 initialized @(3,0)
+GPGPU-Sim uArch: core: 11, cta: 2 initialized @(3,0)
+GPGPU-Sim uArch: core: 12, cta: 2 initialized @(3,0)
+GPGPU-Sim uArch: core: 13, cta: 2 initialized @(3,0)
+GPGPU-Sim uArch: core: 14, cta: 2 initialized @(3,0)
+GPGPU-Sim uArch: core:  0, cta: 2 initialized @(3,0)
+GPGPU-Sim uArch: core:  1, cta: 3 initialized @(4,0)
+GPGPU-Sim uArch: core:  2, cta: 3 initialized @(4,0)
+GPGPU-Sim uArch: core:  3, cta: 3 initialized @(4,0)
+GPGPU-Sim uArch: core:  4, cta: 3 initialized @(4,0)
+GPGPU-Sim uArch: core:  5, cta: 3 initialized @(4,0)
+GPGPU-Sim uArch: core:  6, cta: 3 initialized @(4,0)
+GPGPU-Sim uArch: core:  7, cta: 3 initialized @(4,0)
+GPGPU-Sim uArch: core:  8, cta: 3 initialized @(4,0)
+GPGPU-Sim uArch: core:  9, cta: 3 initialized @(4,0)
+GPGPU-Sim uArch: core: 10, cta: 3 initialized @(4,0)
+GPGPU-Sim uArch: core: 11, cta: 3 initialized @(4,0)
+GPGPU-Sim uArch: core: 12, cta: 3 initialized @(4,0)
+GPGPU-Sim uArch: core: 13, cta: 3 initialized @(4,0)
+GPGPU-Sim uArch: core: 14, cta: 3 initialized @(4,0)
+GPGPU-Sim uArch: core:  0, cta: 3 initialized @(4,0)
+GPGPU-Sim uArch: core:  1, cta: 4 initialized @(5,0)
+GPGPU-Sim uArch: core:  2, cta: 4 initialized @(5,0)
+GPGPU-Sim uArch: core:  3, cta: 4 initialized @(5,0)
+GPGPU-Sim uArch: core:  4, cta: 4 initialized @(5,0)
+GPGPU-Sim uArch: core:  5, cta: 4 initialized @(5,0)
+GPGPU-Sim uArch: core:  6, cta: 4 initialized @(5,0)
+GPGPU-Sim uArch: core:  7, cta: 4 initialized @(5,0)
+GPGPU-Sim uArch: core:  8, cta: 4 initialized @(5,0)
+GPGPU-Sim uArch: core:  9, cta: 4 initialized @(5,0)
+GPGPU-Sim uArch: core: 10, cta: 4 initialized @(5,0)
+GPGPU-Sim uArch: core: 11, cta: 4 initialized @(5,0)
+GPGPU-Sim uArch: core: 12, cta: 4 initialized @(5,0)
+GPGPU-Sim uArch: core: 13, cta: 4 initialized @(5,0)
+GPGPU-Sim uArch: core: 14, cta: 4 initialized @(5,0)
+GPGPU-Sim uArch: core:  0, cta: 4 initialized @(5,0)
+GPGPU-Sim uArch: core:  1, cta: 5 initialized @(6,0)
+GPGPU-Sim uArch: core:  2, cta: 5 initialized @(6,0)
+GPGPU-Sim uArch: core:  3, cta: 5 initialized @(6,0)
+GPGPU-Sim uArch: core:  4, cta: 5 initialized @(6,0)
+GPGPU-Sim uArch: core:  5, cta: 5 initialized @(6,0)
+GPGPU-Sim uArch: core:  6, cta: 5 initialized @(6,0)
+GPGPU-Sim uArch: core:  7, cta: 5 initialized @(6,0)
+GPGPU-Sim uArch: core:  8, cta: 5 initialized @(6,0)
+GPGPU-Sim uArch: core:  9, cta: 5 initialized @(6,0)
+GPGPU-Sim uArch: core: 10, cta: 5 initialized @(6,0)
+GPGPU-Sim uArch: core: 11, cta: 5 initialized @(6,0)
+GPGPU-Sim uArch: core: 12, cta: 5 initialized @(6,0)
+GPGPU-Sim uArch: core: 13, cta: 5 initialized @(6,0)
+GPGPU-Sim uArch: core: 14, cta: 5 initialized @(6,0)
+GPGPU-Sim uArch: core:  0, cta: 5 initialized @(6,0)
+GPGPU-Sim PTX: 100000 instructions simulated : ctaid=(64,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 200000 instructions simulated : ctaid=(57,0,0) tid=(63,0,0)
+GPGPU-Sim PTX: 300000 instructions simulated : ctaid=(86,0,0) tid=(223,0,0)
+GPGPU-Sim uArch: cycles simulated: 500  inst.: 322560 (ipc=645.1) sim_rate=80640 (inst/sec) elapsed = 0:0:00:04 / Mon May 11 18:13:30 2015
+GPGPU-Sim uArch: cycles simulated: 1000  inst.: 368640 (ipc=368.6) sim_rate=73728 (inst/sec) elapsed = 0:0:00:05 / Mon May 11 18:13:31 2015
+GPGPU-Sim PTX: 400000 instructions simulated : ctaid=(17,0,0) tid=(127,0,0)
+GPGPU-Sim uArch: cycles simulated: 1500  inst.: 401920 (ipc=267.9) sim_rate=57417 (inst/sec) elapsed = 0:0:00:07 / Mon May 11 18:13:33 2015
+GPGPU-Sim uArch: cycles simulated: 2000  inst.: 432128 (ipc=216.1) sim_rate=54016 (inst/sec) elapsed = 0:0:00:08 / Mon May 11 18:13:34 2015
+GPGPU-Sim uArch: cycles simulated: 3000  inst.: 432128 (ipc=144.0) sim_rate=48014 (inst/sec) elapsed = 0:0:00:09 / Mon May 11 18:13:35 2015
+GPGPU-Sim PTX: 500000 instructions simulated : ctaid=(54,0,0) tid=(31,0,0)
+GPGPU-Sim uArch: cycles simulated: 3500  inst.: 483584 (ipc=138.2) sim_rate=48358 (inst/sec) elapsed = 0:0:00:10 / Mon May 11 18:13:36 2015
+GPGPU-Sim PTX: 600000 instructions simulated : ctaid=(39,0,0) tid=(191,0,0)
+GPGPU-Sim uArch: cycles simulated: 4000  inst.: 595200 (ipc=148.8) sim_rate=49600 (inst/sec) elapsed = 0:0:00:12 / Mon May 11 18:13:38 2015
+GPGPU-Sim uArch: cycles simulated: 5000  inst.: 595200 (ipc=119.0) sim_rate=45784 (inst/sec) elapsed = 0:0:00:13 / Mon May 11 18:13:39 2015
+GPGPU-Sim PTX: 700000 instructions simulated : ctaid=(38,0,0) tid=(95,0,0)
+GPGPU-Sim uArch: cycles simulated: 6000  inst.: 710400 (ipc=118.4) sim_rate=47360 (inst/sec) elapsed = 0:0:00:15 / Mon May 11 18:13:41 2015
+GPGPU-Sim uArch: cycles simulated: 6500  inst.: 710400 (ipc=109.3) sim_rate=44400 (inst/sec) elapsed = 0:0:00:16 / Mon May 11 18:13:42 2015
+GPGPU-Sim uArch: cycles simulated: 7500  inst.: 710400 (ipc=94.7) sim_rate=41788 (inst/sec) elapsed = 0:0:00:17 / Mon May 11 18:13:43 2015
+GPGPU-Sim PTX: 800000 instructions simulated : ctaid=(8,0,0) tid=(255,0,0)
+GPGPU-Sim uArch: cycles simulated: 8500  inst.: 825600 (ipc=97.1) sim_rate=43452 (inst/sec) elapsed = 0:0:00:19 / Mon May 11 18:13:45 2015
+GPGPU-Sim uArch: cycles simulated: 9500  inst.: 825600 (ipc=86.9) sim_rate=41280 (inst/sec) elapsed = 0:0:00:20 / Mon May 11 18:13:46 2015
+GPGPU-Sim uArch: cycles simulated: 10000  inst.: 826624 (ipc=82.7) sim_rate=39363 (inst/sec) elapsed = 0:0:00:21 / Mon May 11 18:13:47 2015
+GPGPU-Sim PTX: 900000 instructions simulated : ctaid=(33,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 1000000 instructions simulated : ctaid=(38,0,0) tid=(63,0,0)
+GPGPU-Sim PTX: 1100000 instructions simulated : ctaid=(86,0,0) tid=(223,0,0)
+GPGPU-Sim uArch: cycles simulated: 10500  inst.: 1105920 (ipc=105.3) sim_rate=46080 (inst/sec) elapsed = 0:0:00:24 / Mon May 11 18:13:50 2015
+GPGPU-Sim PTX: 1200000 instructions simulated : ctaid=(48,0,0) tid=(127,0,0)
+GPGPU-Sim PTX: 1300000 instructions simulated : ctaid=(57,0,0) tid=(31,0,0)
+GPGPU-Sim PTX: 1400000 instructions simulated : ctaid=(55,0,0) tid=(191,0,0)
+GPGPU-Sim uArch: cycles simulated: 11000  inst.: 1405440 (ipc=127.8) sim_rate=50194 (inst/sec) elapsed = 0:0:00:28 / Mon May 11 18:13:54 2015
+GPGPU-Sim PTX: 1500000 instructions simulated : ctaid=(46,0,0) tid=(95,0,0)
+GPGPU-Sim PTX: 1600000 instructions simulated : ctaid=(76,0,0) tid=(255,0,0)
+GPGPU-Sim uArch: cycles simulated: 11500  inst.: 1603072 (ipc=139.4) sim_rate=51712 (inst/sec) elapsed = 0:0:00:31 / Mon May 11 18:13:57 2015
+GPGPU-Sim PTX: 1700000 instructions simulated : ctaid=(2,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 1800000 instructions simulated : ctaid=(43,0,0) tid=(63,0,0)
+GPGPU-Sim PTX: 1900000 instructions simulated : ctaid=(18,0,0) tid=(223,0,0)
+GPGPU-Sim PTX: 2000000 instructions simulated : ctaid=(14,0,0) tid=(127,0,0)
+GPGPU-Sim PTX: 2100000 instructions simulated : ctaid=(12,0,0) tid=(31,0,0)
+GPGPU-Sim uArch: cycles simulated: 12000  inst.: 2148608 (ipc=179.1) sim_rate=58070 (inst/sec) elapsed = 0:0:00:37 / Mon May 11 18:14:03 2015
+GPGPU-Sim PTX: 2200000 instructions simulated : ctaid=(56,0,0) tid=(191,0,0)
+GPGPU-Sim PTX: 2300000 instructions simulated : ctaid=(72,0,0) tid=(95,0,0)
+GPGPU-Sim PTX: 2400000 instructions simulated : ctaid=(22,0,0) tid=(255,0,0)
+GPGPU-Sim PTX: 2500000 instructions simulated : ctaid=(10,0,0) tid=(159,0,0)
+GPGPU-Sim uArch: cycles simulated: 12500  inst.: 2580480 (ipc=206.4) sim_rate=61440 (inst/sec) elapsed = 0:0:00:42 / Mon May 11 18:14:08 2015
+GPGPU-Sim PTX: 2600000 instructions simulated : ctaid=(60,0,0) tid=(63,0,0)
+GPGPU-Sim PTX: 2700000 instructions simulated : ctaid=(82,0,0) tid=(223,0,0)
+GPGPU-Sim PTX: 2800000 instructions simulated : ctaid=(35,0,0) tid=(127,0,0)
+GPGPU-Sim PTX: 2900000 instructions simulated : ctaid=(81,0,0) tid=(31,0,0)
+GPGPU-Sim uArch: cycles simulated: 13000  inst.: 2949120 (ipc=226.9) sim_rate=64111 (inst/sec) elapsed = 0:0:00:46 / Mon May 11 18:14:12 2015
+GPGPU-Sim PTX: 3000000 instructions simulated : ctaid=(69,0,0) tid=(191,0,0)
+GPGPU-Sim PTX: 3100000 instructions simulated : ctaid=(3,0,0) tid=(95,0,0)
+GPGPU-Sim PTX: 3200000 instructions simulated : ctaid=(73,0,0) tid=(255,0,0)
+GPGPU-Sim PTX: 3300000 instructions simulated : ctaid=(80,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 3400000 instructions simulated : ctaid=(2,0,0) tid=(63,0,0)
+GPGPU-Sim uArch: cycles simulated: 13500  inst.: 3425792 (ipc=253.8) sim_rate=65880 (inst/sec) elapsed = 0:0:00:52 / Mon May 11 18:14:18 2015
+GPGPU-Sim PTX: 3500000 instructions simulated : ctaid=(4,0,0) tid=(223,0,0)
+GPGPU-Sim PTX: 3600000 instructions simulated : ctaid=(56,0,0) tid=(127,0,0)
+GPGPU-Sim PTX: 3700000 instructions simulated : ctaid=(29,0,0) tid=(31,0,0)
+GPGPU-Sim PTX: 3800000 instructions simulated : ctaid=(18,0,0) tid=(191,0,0)
+GPGPU-Sim PTX: 3900000 instructions simulated : ctaid=(45,0,0) tid=(95,0,0)
+GPGPU-Sim uArch: cycles simulated: 14000  inst.: 3885312 (ipc=277.5) sim_rate=68163 (inst/sec) elapsed = 0:0:00:57 / Mon May 11 18:14:23 2015
+GPGPU-Sim PTX: 4000000 instructions simulated : ctaid=(37,0,0) tid=(255,0,0)
+GPGPU-Sim PTX: 4100000 instructions simulated : ctaid=(3,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 4200000 instructions simulated : ctaid=(6,0,0) tid=(63,0,0)
+GPGPU-Sim PTX: 4300000 instructions simulated : ctaid=(73,0,0) tid=(223,0,0)
+GPGPU-Sim PTX: 4400000 instructions simulated : ctaid=(39,0,0) tid=(127,0,0)
+GPGPU-Sim uArch: cycles simulated: 14500  inst.: 4422912 (ipc=305.0) sim_rate=70204 (inst/sec) elapsed = 0:0:01:03 / Mon May 11 18:14:29 2015
+GPGPU-Sim PTX: 4500000 instructions simulated : ctaid=(14,0,0) tid=(31,0,0)
+GPGPU-Sim PTX: 4600000 instructions simulated : ctaid=(74,0,0) tid=(191,0,0)
+GPGPU-Sim PTX: 4700000 instructions simulated : ctaid=(56,0,0) tid=(95,0,0)
+GPGPU-Sim uArch: cycles simulated: 15000  inst.: 4791552 (ipc=319.4) sim_rate=70464 (inst/sec) elapsed = 0:0:01:08 / Mon May 11 18:14:34 2015
+GPGPU-Sim PTX: 4800000 instructions simulated : ctaid=(17,0,0) tid=(255,0,0)
+GPGPU-Sim PTX: 4900000 instructions simulated : ctaid=(7,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 5000000 instructions simulated : ctaid=(51,0,0) tid=(63,0,0)
+GPGPU-Sim PTX: 5100000 instructions simulated : ctaid=(81,0,0) tid=(223,0,0)
+GPGPU-Sim PTX: 5200000 instructions simulated : ctaid=(65,0,0) tid=(127,0,0)
+GPGPU-Sim uArch: cycles simulated: 15500  inst.: 5194240 (ipc=335.1) sim_rate=70192 (inst/sec) elapsed = 0:0:01:14 / Mon May 11 18:14:40 2015
+GPGPU-Sim PTX: 5300000 instructions simulated : ctaid=(34,0,0) tid=(31,0,0)
+GPGPU-Sim PTX: 5400000 instructions simulated : ctaid=(20,0,0) tid=(191,0,0)
+GPGPU-Sim PTX: 5500000 instructions simulated : ctaid=(84,0,0) tid=(95,0,0)
+GPGPU-Sim PTX: 5600000 instructions simulated : ctaid=(85,0,0) tid=(255,0,0)
+GPGPU-Sim PTX: 5700000 instructions simulated : ctaid=(13,0,0) tid=(159,0,0)
+GPGPU-Sim uArch: cycles simulated: 16000  inst.: 5690112 (ipc=355.6) sim_rate=72026 (inst/sec) elapsed = 0:0:01:19 / Mon May 11 18:14:45 2015
+GPGPU-Sim PTX: 5800000 instructions simulated : ctaid=(27,0,0) tid=(63,0,0)
+GPGPU-Sim PTX: 5900000 instructions simulated : ctaid=(1,0,0) tid=(223,0,0)
+GPGPU-Sim PTX: 6000000 instructions simulated : ctaid=(5,0,0) tid=(127,0,0)
+GPGPU-Sim PTX: 6100000 instructions simulated : ctaid=(9,0,0) tid=(31,0,0)
+GPGPU-Sim PTX: 6200000 instructions simulated : ctaid=(54,0,0) tid=(191,0,0)
+GPGPU-Sim uArch: cycles simulated: 16500  inst.: 6216960 (ipc=376.8) sim_rate=73140 (inst/sec) elapsed = 0:0:01:25 / Mon May 11 18:14:51 2015
+GPGPU-Sim PTX: 6300000 instructions simulated : ctaid=(54,0,0) tid=(95,0,0)
+GPGPU-Sim PTX: 6400000 instructions simulated : ctaid=(7,0,0) tid=(255,0,0)
+GPGPU-Sim PTX: 6500000 instructions simulated : ctaid=(16,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 6600000 instructions simulated : ctaid=(78,0,0) tid=(63,0,0)
+GPGPU-Sim uArch: cycles simulated: 17000  inst.: 6628864 (ipc=389.9) sim_rate=73654 (inst/sec) elapsed = 0:0:01:30 / Mon May 11 18:14:56 2015
+GPGPU-Sim PTX: 6700000 instructions simulated : ctaid=(8,0,0) tid=(223,0,0)
+GPGPU-Sim PTX: 6800000 instructions simulated : ctaid=(73,0,0) tid=(127,0,0)
+GPGPU-Sim PTX: 6900000 instructions simulated : ctaid=(20,0,0) tid=(31,0,0)
+GPGPU-Sim PTX: 7000000 instructions simulated : ctaid=(84,0,0) tid=(191,0,0)
+GPGPU-Sim uArch: cycles simulated: 17500  inst.: 7004160 (ipc=400.2) sim_rate=74512 (inst/sec) elapsed = 0:0:01:34 / Mon May 11 18:15:00 2015
+GPGPU-Sim PTX: 7100000 instructions simulated : ctaid=(7,0,0) tid=(95,0,0)
+GPGPU-Sim PTX: 7200000 instructions simulated : ctaid=(27,0,0) tid=(255,0,0)
+GPGPU-Sim PTX: 7300000 instructions simulated : ctaid=(87,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 7400000 instructions simulated : ctaid=(3,0,0) tid=(63,0,0)
+GPGPU-Sim uArch: cycles simulated: 18000  inst.: 7394304 (ipc=410.8) sim_rate=74689 (inst/sec) elapsed = 0:0:01:39 / Mon May 11 18:15:05 2015
+GPGPU-Sim PTX: 7500000 instructions simulated : ctaid=(81,0,0) tid=(223,0,0)
+GPGPU-Sim PTX: 7600000 instructions simulated : ctaid=(65,0,0) tid=(127,0,0)
+GPGPU-Sim PTX: 7700000 instructions simulated : ctaid=(81,0,0) tid=(31,0,0)
+GPGPU-Sim PTX: 7800000 instructions simulated : ctaid=(19,0,0) tid=(191,0,0)
+GPGPU-Sim PTX: 7900000 instructions simulated : ctaid=(5,0,0) tid=(95,0,0)
+GPGPU-Sim uArch: cycles simulated: 18500  inst.: 7915520 (ipc=427.9) sim_rate=75385 (inst/sec) elapsed = 0:0:01:45 / Mon May 11 18:15:11 2015
+GPGPU-Sim PTX: 8000000 instructions simulated : ctaid=(43,0,0) tid=(255,0,0)
+GPGPU-Sim PTX: 8100000 instructions simulated : ctaid=(82,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 8200000 instructions simulated : ctaid=(78,0,0) tid=(63,0,0)
+GPGPU-Sim PTX: 8300000 instructions simulated : ctaid=(77,0,0) tid=(223,0,0)
+GPGPU-Sim PTX: 8400000 instructions simulated : ctaid=(12,0,0) tid=(127,0,0)
+GPGPU-Sim uArch: cycles simulated: 19000  inst.: 8409600 (ipc=442.6) sim_rate=76450 (inst/sec) elapsed = 0:0:01:50 / Mon May 11 18:15:16 2015
+GPGPU-Sim PTX: 8500000 instructions simulated : ctaid=(45,0,0) tid=(31,0,0)
+GPGPU-Sim PTX: 8600000 instructions simulated : ctaid=(66,0,0) tid=(191,0,0)
+GPGPU-Sim PTX: 8700000 instructions simulated : ctaid=(15,0,0) tid=(95,0,0)
+GPGPU-Sim uArch: cycles simulated: 19500  inst.: 8719104 (ipc=447.1) sim_rate=76483 (inst/sec) elapsed = 0:0:01:54 / Mon May 11 18:15:20 2015
+GPGPU-Sim PTX: 8800000 instructions simulated : ctaid=(52,0,0) tid=(255,0,0)
+GPGPU-Sim PTX: 8900000 instructions simulated : ctaid=(80,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 9000000 instructions simulated : ctaid=(14,0,0) tid=(63,0,0)
+GPGPU-Sim PTX: 9100000 instructions simulated : ctaid=(64,0,0) tid=(223,0,0)
+GPGPU-Sim PTX: 9200000 instructions simulated : ctaid=(83,0,0) tid=(127,0,0)
+GPGPU-Sim uArch: cycles simulated: 20000  inst.: 9216000 (ipc=460.8) sim_rate=77445 (inst/sec) elapsed = 0:0:01:59 / Mon May 11 18:15:25 2015
+GPGPU-Sim PTX: 9300000 instructions simulated : ctaid=(42,0,0) tid=(31,0,0)
+GPGPU-Sim PTX: 9400000 instructions simulated : ctaid=(3,0,0) tid=(191,0,0)
+GPGPU-Sim PTX: 9500000 instructions simulated : ctaid=(68,0,0) tid=(95,0,0)
+GPGPU-Sim uArch: cycles simulated: 20500  inst.: 9584640 (ipc=467.5) sim_rate=77923 (inst/sec) elapsed = 0:0:02:03 / Mon May 11 18:15:29 2015
+GPGPU-Sim PTX: 9600000 instructions simulated : ctaid=(60,0,0) tid=(255,0,0)
+GPGPU-Sim PTX: 9700000 instructions simulated : ctaid=(49,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 9800000 instructions simulated : ctaid=(43,0,0) tid=(63,0,0)
+GPGPU-Sim PTX: 9900000 instructions simulated : ctaid=(62,0,0) tid=(223,0,0)
+GPGPU-Sim PTX: 10000000 instructions simulated : ctaid=(83,0,0) tid=(127,0,0)
+GPGPU-Sim uArch: cycles simulated: 21000  inst.: 10001920 (ipc=476.3) sim_rate=77534 (inst/sec) elapsed = 0:0:02:09 / Mon May 11 18:15:35 2015
+GPGPU-Sim PTX: 10100000 instructions simulated : ctaid=(4,0,0) tid=(31,0,0)
+GPGPU-Sim PTX: 10200000 instructions simulated : ctaid=(10,0,0) tid=(191,0,0)
+GPGPU-Sim PTX: 10300000 instructions simulated : ctaid=(79,0,0) tid=(95,0,0)
+GPGPU-Sim PTX: 10400000 instructions simulated : ctaid=(87,0,0) tid=(255,0,0)
+GPGPU-Sim uArch: cycles simulated: 21500  inst.: 10418944 (ipc=484.6) sim_rate=77177 (inst/sec) elapsed = 0:0:02:15 / Mon May 11 18:15:41 2015
+GPGPU-Sim PTX: 10500000 instructions simulated : ctaid=(43,0,0) tid=(159,0,0)
+GPGPU-Sim uArch: Shader 4 finished CTA #0 (21802,0), 5 CTAs running
+GPGPU-Sim uArch: core:  4, cta: 0 initialized @(21803,0)
+GPGPU-Sim uArch: Shader 5 finished CTA #0 (21838,0), 5 CTAs running
+GPGPU-Sim uArch: core:  5, cta: 0 initialized @(21839,0)
+GPGPU-Sim uArch: Shader 0 finished CTA #0 (21853,0), 5 CTAs running
+GPGPU-Sim uArch: core:  0, cta: 0 initialized @(21854,0)
+GPGPU-Sim uArch: Shader 1 finished CTA #0 (21864,0), 5 CTAs running
+GPGPU-Sim uArch: core:  1, cta: 0 initialized @(21865,0)
+GPGPU-Sim uArch: Shader 3 finished CTA #0 (21884,0), 5 CTAs running
+GPGPU-Sim uArch: core:  3, cta: 0 initialized @(21885,0)
+GPGPU-Sim uArch: Shader 7 finished CTA #0 (21926,0), 5 CTAs running
+GPGPU-Sim uArch: core:  7, cta: 0 initialized @(21927,0)
+GPGPU-Sim uArch: Shader 2 finished CTA #0 (21931,0), 5 CTAs running
+GPGPU-Sim uArch: core:  2, cta: 0 initialized @(21932,0)
+GPGPU-Sim uArch: Shader 9 finished CTA #0 (21947,0), 5 CTAs running
+GPGPU-Sim uArch: core:  9, cta: 0 initialized @(21948,0)
+GPGPU-Sim uArch: Shader 8 finished CTA #0 (21963,0), 5 CTAs running
+GPGPU-Sim uArch: core:  8, cta: 0 initialized @(21964,0)
+GPGPU-Sim uArch: cycles simulated: 22000  inst.: 10529024 (ipc=478.6) sim_rate=76854 (inst/sec) elapsed = 0:0:02:17 / Mon May 11 18:15:43 2015
+GPGPU-Sim uArch: Shader 6 finished CTA #0 (22009,0), 5 CTAs running
+GPGPU-Sim uArch: core:  6, cta: 0 initialized @(22010,0)
+GPGPU-Sim uArch: Shader 4 finished CTA #1 (22019,0), 5 CTAs running
+GPGPU-Sim uArch: core:  4, cta: 1 initialized @(22020,0)
+GPGPU-Sim uArch: Shader 11 finished CTA #0 (22025,0), 5 CTAs running
+GPGPU-Sim uArch: core: 11, cta: 0 initialized @(22026,0)
+GPGPU-Sim uArch: Shader 10 finished CTA #0 (22050,0), 5 CTAs running
+GPGPU-Sim uArch: core: 10, cta: 0 initialized @(22051,0)
+GPGPU-Sim uArch: Shader 14 finished CTA #0 (22118,0), 5 CTAs running
+GPGPU-Sim uArch: core: 14, cta: 0 initialized @(22119,0)
+GPGPU-Sim uArch: Shader 12 finished CTA #0 (22133,0), 5 CTAs running
+GPGPU-Sim uArch: core: 12, cta: 0 initialized @(22134,0)
+GPGPU-Sim uArch: Shader 13 finished CTA #0 (22144,0), 5 CTAs running
+GPGPU-Sim uArch: core: 13, cta: 0 initialized @(22145,0)
+GPGPU-Sim uArch: Shader 5 finished CTA #1 (22149,0), 5 CTAs running
+GPGPU-Sim uArch: core:  5, cta: 1 initialized @(22150,0)
+GPGPU-Sim uArch: Shader 0 finished CTA #1 (22169,0), 5 CTAs running
+GPGPU-Sim uArch: core:  0, cta: 1 initialized @(22170,0)
+GPGPU-Sim uArch: Shader 1 finished CTA #1 (22175,0), 5 CTAs running
+GPGPU-Sim uArch: core:  1, cta: 1 initialized @(22176,0)
+GPGPU-Sim uArch: Shader 3 finished CTA #1 (22195,0), 5 CTAs running
+GPGPU-Sim uArch: core:  3, cta: 1 initialized @(22196,0)
+GPGPU-Sim uArch: Shader 7 finished CTA #1 (22237,0), 5 CTAs running
+GPGPU-Sim uArch: core:  7, cta: 1 initialized @(22238,0)
+GPGPU-Sim uArch: Shader 2 finished CTA #1 (22242,0), 5 CTAs running
+GPGPU-Sim uArch: core:  2, cta: 1 initialized @(22243,0)
+GPGPU-Sim uArch: Shader 8 finished CTA #1 (22273,0), 5 CTAs running
+GPGPU-Sim uArch: core:  8, cta: 1 initialized @(22274,0)
+GPGPU-Sim uArch: Shader 6 finished CTA #1 (22293,0), 5 CTAs running
+GPGPU-Sim uArch: core:  6, cta: 1 initialized @(22294,0)
+GPGPU-Sim uArch: Shader 9 finished CTA #1 (22319,0), 5 CTAs running
+GPGPU-Sim uArch: core:  9, cta: 1 initialized @(22320,0)
+GPGPU-Sim uArch: Shader 4 finished CTA #2 (22330,0), 5 CTAs running
+GPGPU-Sim uArch: core:  4, cta: 2 initialized @(22331,0)
+GPGPU-Sim uArch: Shader 11 finished CTA #1 (22335,0), 5 CTAs running
+GPGPU-Sim uArch: core: 11, cta: 1 initialized @(22336,0)
+GPGPU-Sim uArch: Shader 10 finished CTA #1 (22361,0), 5 CTAs running
+GPGPU-Sim uArch: core: 10, cta: 1 initialized @(22362,0)
+GPGPU-Sim uArch: Shader 14 finished CTA #1 (22428,0), 5 CTAs running
+GPGPU-Sim uArch: core: 14, cta: 1 initialized @(22429,0)
+GPGPU-Sim uArch: Shader 13 finished CTA #1 (22454,0), 5 CTAs running
+GPGPU-Sim uArch: core: 13, cta: 1 initialized @(22455,0)
+GPGPU-Sim uArch: Shader 5 finished CTA #2 (22459,0), 5 CTAs running
+GPGPU-Sim uArch: core:  5, cta: 2 initialized @(22460,0)
+GPGPU-Sim uArch: Shader 12 finished CTA #1 (22462,0), 5 CTAs running
+GPGPU-Sim uArch: core: 12, cta: 1 initialized @(22463,0)
+GPGPU-Sim uArch: Shader 1 finished CTA #2 (22485,0), 5 CTAs running
+GPGPU-Sim uArch: core:  1, cta: 2 initialized @(22486,0)
+GPGPU-Sim uArch: Shader 0 finished CTA #2 (22493,0), 5 CTAs running
+GPGPU-Sim uArch: core:  0, cta: 2 initialized @(22494,0)
+GPGPU-Sim uArch: cycles simulated: 22500  inst.: 10536448 (ipc=468.3) sim_rate=76351 (inst/sec) elapsed = 0:0:02:18 / Mon May 11 18:15:44 2015
+GPGPU-Sim uArch: Shader 3 finished CTA #2 (22524,0), 5 CTAs running
+GPGPU-Sim uArch: core:  3, cta: 2 initialized @(22525,0)
+GPGPU-Sim uArch: Shader 4 finished CTA #3 (22553,0), 5 CTAs running
+GPGPU-Sim uArch: core:  4, cta: 3 initialized @(22554,0)
+GPGPU-Sim uArch: Shader 2 finished CTA #2 (22575,0), 5 CTAs running
+GPGPU-Sim uArch: core:  2, cta: 2 initialized @(22576,0)
+GPGPU-Sim uArch: Shader 7 finished CTA #2 (22588,0), 5 CTAs running
+GPGPU-Sim uArch: core:  7, cta: 2 initialized @(22589,0)
+GPGPU-Sim uArch: Shader 8 finished CTA #2 (22619,0), 5 CTAs running
+GPGPU-Sim uArch: core:  8, cta: 2 initialized @(22620,0)
+GPGPU-Sim uArch: Shader 5 finished CTA #3 (22621,0), 5 CTAs running
+GPGPU-Sim uArch: core:  5, cta: 3 initialized @(22622,0)
+GPGPU-Sim uArch: Shader 6 finished CTA #2 (22649,0), 5 CTAs running
+GPGPU-Sim uArch: core:  6, cta: 2 initialized @(22650,0)
+GPGPU-Sim uArch: Shader 10 finished CTA #2 (22669,0), 5 CTAs running
+GPGPU-Sim uArch: core: 10, cta: 2 initialized @(22670,0)
+GPGPU-Sim uArch: Shader 9 finished CTA #2 (22698,0), 5 CTAs running
+GPGPU-Sim uArch: core:  9, cta: 2 initialized @(22699,0)
+GPGPU-Sim uArch: Shader 0 finished CTA #3 (22707,0), 5 CTAs running
+GPGPU-Sim uArch: core:  0, cta: 3 initialized @(22708,0)
+GPGPU-Sim uArch: Shader 11 finished CTA #2 (22718,0), 5 CTAs running
+GPGPU-Sim uArch: core: 11, cta: 2 initialized @(22719,0)
+GPGPU-Sim uArch: Shader 8 finished CTA #3 (22719,0), 5 CTAs running
+GPGPU-Sim uArch: core:  8, cta: 3 initialized @(22720,0)
+GPGPU-Sim uArch: Shader 3 finished CTA #3 (22756,0), 5 CTAs running
+GPGPU-Sim uArch: core:  3, cta: 3 initialized @(22757,0)
+GPGPU-Sim uArch: Shader 7 finished CTA #3 (22768,0), 5 CTAs running
+GPGPU-Sim uArch: core:  7, cta: 3 initialized @(22769,0)
+GPGPU-Sim PTX: 10600000 instructions simulated : ctaid=(99,0,0) tid=(63,0,0)
+GPGPU-Sim uArch: Shader 12 finished CTA #2 (22797,0), 5 CTAs running
+GPGPU-Sim uArch: core: 12, cta: 2 initialized @(22798,0)
+GPGPU-Sim uArch: Shader 14 finished CTA #2 (22798,0), 5 CTAs running
+GPGPU-Sim uArch: core: 14, cta: 2 initialized @(22799,0)
+GPGPU-Sim uArch: Shader 11 finished CTA #3 (22812,0), 5 CTAs running
+GPGPU-Sim uArch: core: 11, cta: 3 initialized @(22813,0)
+GPGPU-Sim uArch: Shader 13 finished CTA #2 (22816,0), 5 CTAs running
+GPGPU-Sim uArch: core: 13, cta: 2 initialized @(22817,0)
+GPGPU-Sim PTX: 10700000 instructions simulated : ctaid=(132,0,0) tid=(223,0,0)
+GPGPU-Sim uArch: Shader 1 finished CTA #3 (22856,0), 5 CTAs running
+GPGPU-Sim uArch: core:  1, cta: 3 initialized @(22857,0)
+GPGPU-Sim uArch: Shader 6 finished CTA #3 (22877,0), 5 CTAs running
+GPGPU-Sim uArch: core:  6, cta: 3 initialized @(22878,0)
+GPGPU-Sim uArch: Shader 2 finished CTA #3 (22878,0), 5 CTAs running
+GPGPU-Sim uArch: core:  2, cta: 3 initialized @(22879,0)
+GPGPU-Sim uArch: Shader 4 finished CTA #4 (22906,0), 5 CTAs running
+GPGPU-Sim uArch: core:  4, cta: 4 initialized @(22907,0)
+GPGPU-Sim uArch: Shader 9 finished CTA #3 (22908,0), 5 CTAs running
+GPGPU-Sim uArch: core:  9, cta: 3 initialized @(22909,0)
+GPGPU-Sim uArch: Shader 14 finished CTA #3 (22919,0), 5 CTAs running
+GPGPU-Sim uArch: core: 14, cta: 3 initialized @(22920,0)
+GPGPU-Sim uArch: Shader 10 finished CTA #3 (22937,0), 5 CTAs running
+GPGPU-Sim uArch: core: 10, cta: 3 initialized @(22938,0)
+GPGPU-Sim uArch: Shader 5 finished CTA #4 (22950,0), 5 CTAs running
+GPGPU-Sim uArch: core:  5, cta: 4 initialized @(22951,0)
+GPGPU-Sim uArch: Shader 12 finished CTA #3 (22981,0), 5 CTAs running
+GPGPU-Sim uArch: core: 12, cta: 3 initialized @(22982,0)
+GPGPU-Sim uArch: cycles simulated: 23000  inst.: 10774784 (ipc=468.5) sim_rate=76416 (inst/sec) elapsed = 0:0:02:21 / Mon May 11 18:15:47 2015
+GPGPU-Sim uArch: Shader 13 finished CTA #3 (23030,0), 5 CTAs running
+GPGPU-Sim uArch: core: 13, cta: 3 initialized @(23031,0)
+GPGPU-Sim uArch: Shader 2 finished CTA #4 (23044,0), 5 CTAs running
+GPGPU-Sim uArch: core:  2, cta: 4 initialized @(23045,0)
+GPGPU-Sim uArch: Shader 1 finished CTA #4 (23061,0), 5 CTAs running
+GPGPU-Sim uArch: core:  1, cta: 4 initialized @(23062,0)
+GPGPU-Sim PTX: 10800000 instructions simulated : ctaid=(153,0,0) tid=(127,0,0)
+GPGPU-Sim uArch: Shader 8 finished CTA #4 (23075,0), 5 CTAs running
+GPGPU-Sim uArch: core:  8, cta: 4 initialized @(23076,0)
+GPGPU-Sim uArch: Shader 7 finished CTA #4 (23123,0), 5 CTAs running
+GPGPU-Sim uArch: core:  7, cta: 4 initialized @(23124,0)
+GPGPU-Sim uArch: Shader 6 finished CTA #4 (23132,0), 5 CTAs running
+GPGPU-Sim uArch: core:  6, cta: 4 initialized @(23133,0)
+GPGPU-Sim uArch: Shader 11 finished CTA #4 (23137,0), 5 CTAs running
+GPGPU-Sim uArch: core: 11, cta: 4 initialized @(23138,0)
+GPGPU-Sim uArch: Shader 9 finished CTA #4 (23163,0), 5 CTAs running
+GPGPU-Sim uArch: core:  9, cta: 4 initialized @(23164,0)
+GPGPU-Sim uArch: Shader 14 finished CTA #4 (23211,0), 5 CTAs running
+GPGPU-Sim uArch: core: 14, cta: 4 initialized @(23212,0)
+GPGPU-Sim uArch: Shader 4 finished CTA #5 (23216,0), 5 CTAs running
+GPGPU-Sim uArch: core:  4, cta: 5 initialized @(23217,0)
+GPGPU-Sim uArch: Shader 12 finished CTA #4 (23230,0), 5 CTAs running
+GPGPU-Sim uArch: core: 12, cta: 4 initialized @(23231,0)
+GPGPU-Sim uArch: Shader 10 finished CTA #4 (23247,0), 5 CTAs running
+GPGPU-Sim uArch: core: 10, cta: 4 initialized @(23248,0)
+GPGPU-Sim uArch: Shader 3 finished CTA #4 (23250,0), 5 CTAs running
+GPGPU-Sim uArch: core:  3, cta: 4 initialized @(23251,0)
+GPGPU-Sim uArch: Shader 5 finished CTA #5 (23261,0), 5 CTAs running
+GPGPU-Sim uArch: core:  5, cta: 5 initialized @(23262,0)
+GPGPU-Sim uArch: Shader 13 finished CTA #4 (23309,0), 5 CTAs running
+GPGPU-Sim uArch: core: 13, cta: 4 initialized @(23310,0)
+GPGPU-Sim uArch: Shader 0 finished CTA #4 (23312,0), 5 CTAs running
+GPGPU-Sim uArch: core:  0, cta: 4 initialized @(23313,0)
+GPGPU-Sim uArch: Shader 2 finished CTA #5 (23335,0), 5 CTAs running
+GPGPU-Sim uArch: core:  2, cta: 5 initialized @(23336,0)
+GPGPU-Sim uArch: Shader 6 finished CTA #5 (23343,0), 5 CTAs running
+GPGPU-Sim uArch: core:  6, cta: 5 initialized @(23344,0)
+GPGPU-Sim uArch: Shader 8 finished CTA #5 (23385,0), 5 CTAs running
+GPGPU-Sim uArch: core:  8, cta: 5 initialized @(23386,0)
+GPGPU-Sim uArch: Shader 7 finished CTA #5 (23408,0), 5 CTAs running
+GPGPU-Sim uArch: core:  7, cta: 5 initialized @(23409,0)
+GPGPU-Sim uArch: cycles simulated: 23500  inst.: 10860288 (ipc=462.1) sim_rate=75946 (inst/sec) elapsed = 0:0:02:23 / Mon May 11 18:15:49 2015
+GPGPU-Sim PTX: 10900000 instructions simulated : ctaid=(96,0,0) tid=(31,0,0)
+GPGPU-Sim PTX: 11000000 instructions simulated : ctaid=(132,0,0) tid=(191,0,0)
+GPGPU-Sim uArch: Shader 10 finished CTA #5 (23969,0), 5 CTAs running
+GPGPU-Sim uArch: core: 10, cta: 5 initialized @(23970,0)
+GPGPU-Sim PTX: 11100000 instructions simulated : ctaid=(135,0,0) tid=(95,0,0)
+GPGPU-Sim uArch: Shader 9 finished CTA #5 (23983,0), 5 CTAs running
+GPGPU-Sim uArch: core:  9, cta: 5 initialized @(23984,0)
+GPGPU-Sim uArch: Shader 12 finished CTA #5 (23989,0), 5 CTAs running
+GPGPU-Sim uArch: core: 12, cta: 5 initialized @(23990,0)
+GPGPU-Sim uArch: Shader 1 finished CTA #5 (23993,0), 5 CTAs running
+GPGPU-Sim uArch: core:  1, cta: 5 initialized @(23994,0)
+GPGPU-Sim uArch: cycles simulated: 24000  inst.: 11103744 (ipc=462.7) sim_rate=76053 (inst/sec) elapsed = 0:0:02:26 / Mon May 11 18:15:52 2015
+GPGPU-Sim uArch: Shader 13 finished CTA #5 (24003,0), 5 CTAs running
+GPGPU-Sim uArch: core: 13, cta: 5 initialized @(24004,0)
+GPGPU-Sim uArch: Shader 11 finished CTA #5 (24009,0), 5 CTAs running
+GPGPU-Sim uArch: core: 11, cta: 5 initialized @(24010,0)
+GPGPU-Sim uArch: Shader 14 finished CTA #5 (24021,0), 5 CTAs running
+GPGPU-Sim uArch: core: 14, cta: 5 initialized @(24022,0)
+GPGPU-Sim uArch: Shader 3 finished CTA #5 (24055,0), 5 CTAs running
+GPGPU-Sim uArch: core:  3, cta: 5 initialized @(24056,0)
+GPGPU-Sim uArch: Shader 0 finished CTA #5 (24063,0), 5 CTAs running
+GPGPU-Sim uArch: core:  0, cta: 5 initialized @(24064,0)
+GPGPU-Sim PTX: 11200000 instructions simulated : ctaid=(179,0,0) tid=(255,0,0)
+GPGPU-Sim PTX: 11300000 instructions simulated : ctaid=(95,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 11400000 instructions simulated : ctaid=(136,0,0) tid=(63,0,0)
+GPGPU-Sim PTX: 11500000 instructions simulated : ctaid=(160,0,0) tid=(223,0,0)
+GPGPU-Sim PTX: 11600000 instructions simulated : ctaid=(145,0,0) tid=(127,0,0)
+GPGPU-Sim PTX: 11700000 instructions simulated : ctaid=(144,0,0) tid=(31,0,0)
+GPGPU-Sim PTX: 11800000 instructions simulated : ctaid=(98,0,0) tid=(191,0,0)
+GPGPU-Sim uArch: cycles simulated: 24500  inst.: 11791616 (ipc=481.3) sim_rate=76568 (inst/sec) elapsed = 0:0:02:34 / Mon May 11 18:16:00 2015
+GPGPU-Sim PTX: 11900000 instructions simulated : ctaid=(178,0,0) tid=(95,0,0)
+GPGPU-Sim PTX: 12000000 instructions simulated : ctaid=(130,0,0) tid=(255,0,0)
+GPGPU-Sim PTX: 12100000 instructions simulated : ctaid=(114,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 12200000 instructions simulated : ctaid=(132,0,0) tid=(63,0,0)
+GPGPU-Sim PTX: 12300000 instructions simulated : ctaid=(132,0,0) tid=(223,0,0)
+GPGPU-Sim PTX: 12400000 instructions simulated : ctaid=(160,0,0) tid=(127,0,0)
+GPGPU-Sim uArch: cycles simulated: 25000  inst.: 12443136 (ipc=497.7) sim_rate=77286 (inst/sec) elapsed = 0:0:02:41 / Mon May 11 18:16:07 2015
+GPGPU-Sim PTX: 12500000 instructions simulated : ctaid=(101,0,0) tid=(31,0,0)
+GPGPU-Sim PTX: 12600000 instructions simulated : ctaid=(146,0,0) tid=(191,0,0)
+GPGPU-Sim PTX: 12700000 instructions simulated : ctaid=(151,0,0) tid=(95,0,0)
+GPGPU-Sim PTX: 12800000 instructions simulated : ctaid=(169,0,0) tid=(255,0,0)
+GPGPU-Sim PTX: 12900000 instructions simulated : ctaid=(95,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 13000000 instructions simulated : ctaid=(118,0,0) tid=(63,0,0)
+GPGPU-Sim PTX: 13100000 instructions simulated : ctaid=(105,0,0) tid=(223,0,0)
+GPGPU-Sim uArch: cycles simulated: 25500  inst.: 13172224 (ipc=516.6) sim_rate=77483 (inst/sec) elapsed = 0:0:02:50 / Mon May 11 18:16:16 2015
+GPGPU-Sim PTX: 13200000 instructions simulated : ctaid=(156,0,0) tid=(127,0,0)
+GPGPU-Sim PTX: 13300000 instructions simulated : ctaid=(127,0,0) tid=(31,0,0)
+GPGPU-Sim PTX: 13400000 instructions simulated : ctaid=(121,0,0) tid=(191,0,0)
+GPGPU-Sim PTX: 13500000 instructions simulated : ctaid=(142,0,0) tid=(95,0,0)
+GPGPU-Sim PTX: 13600000 instructions simulated : ctaid=(137,0,0) tid=(255,0,0)
+GPGPU-Sim PTX: 13700000 instructions simulated : ctaid=(163,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 13800000 instructions simulated : ctaid=(153,0,0) tid=(63,0,0)
+GPGPU-Sim uArch: cycles simulated: 26000  inst.: 13794048 (ipc=530.5) sim_rate=77932 (inst/sec) elapsed = 0:0:02:57 / Mon May 11 18:16:23 2015
+GPGPU-Sim PTX: 13900000 instructions simulated : ctaid=(177,0,0) tid=(223,0,0)
+GPGPU-Sim PTX: 14000000 instructions simulated : ctaid=(99,0,0) tid=(127,0,0)
+GPGPU-Sim PTX: 14100000 instructions simulated : ctaid=(140,0,0) tid=(31,0,0)
+GPGPU-Sim PTX: 14200000 instructions simulated : ctaid=(151,0,0) tid=(191,0,0)
+GPGPU-Sim PTX: 14300000 instructions simulated : ctaid=(157,0,0) tid=(95,0,0)
+GPGPU-Sim PTX: 14400000 instructions simulated : ctaid=(104,0,0) tid=(255,0,0)
+GPGPU-Sim uArch: cycles simulated: 26500  inst.: 14407680 (ipc=543.7) sim_rate=78302 (inst/sec) elapsed = 0:0:03:04 / Mon May 11 18:16:30 2015
+GPGPU-Sim PTX: 14500000 instructions simulated : ctaid=(174,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 14600000 instructions simulated : ctaid=(139,0,0) tid=(63,0,0)
+GPGPU-Sim PTX: 14700000 instructions simulated : ctaid=(109,0,0) tid=(223,0,0)
+GPGPU-Sim PTX: 14800000 instructions simulated : ctaid=(157,0,0) tid=(127,0,0)
+GPGPU-Sim PTX: 14900000 instructions simulated : ctaid=(98,0,0) tid=(31,0,0)
+GPGPU-Sim PTX: 15000000 instructions simulated : ctaid=(133,0,0) tid=(191,0,0)
+GPGPU-Sim uArch: cycles simulated: 27000  inst.: 15046400 (ipc=557.3) sim_rate=78776 (inst/sec) elapsed = 0:0:03:11 / Mon May 11 18:16:37 2015
+GPGPU-Sim PTX: 15100000 instructions simulated : ctaid=(131,0,0) tid=(95,0,0)
+GPGPU-Sim PTX: 15200000 instructions simulated : ctaid=(118,0,0) tid=(255,0,0)
+GPGPU-Sim PTX: 15300000 instructions simulated : ctaid=(158,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 15400000 instructions simulated : ctaid=(93,0,0) tid=(63,0,0)
+GPGPU-Sim PTX: 15500000 instructions simulated : ctaid=(143,0,0) tid=(223,0,0)
+GPGPU-Sim PTX: 15600000 instructions simulated : ctaid=(114,0,0) tid=(127,0,0)
+GPGPU-Sim PTX: 15700000 instructions simulated : ctaid=(163,0,0) tid=(31,0,0)
+GPGPU-Sim uArch: cycles simulated: 27500  inst.: 15737600 (ipc=572.3) sim_rate=79083 (inst/sec) elapsed = 0:0:03:19 / Mon May 11 18:16:45 2015
+GPGPU-Sim PTX: 15800000 instructions simulated : ctaid=(131,0,0) tid=(191,0,0)
+GPGPU-Sim PTX: 15900000 instructions simulated : ctaid=(149,0,0) tid=(95,0,0)
+GPGPU-Sim PTX: 16000000 instructions simulated : ctaid=(125,0,0) tid=(255,0,0)
+GPGPU-Sim PTX: 16100000 instructions simulated : ctaid=(91,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 16200000 instructions simulated : ctaid=(160,0,0) tid=(63,0,0)
+GPGPU-Sim PTX: 16300000 instructions simulated : ctaid=(163,0,0) tid=(223,0,0)
+GPGPU-Sim PTX: 16400000 instructions simulated : ctaid=(170,0,0) tid=(127,0,0)
+GPGPU-Sim uArch: cycles simulated: 28000  inst.: 16379648 (ipc=585.0) sim_rate=79512 (inst/sec) elapsed = 0:0:03:26 / Mon May 11 18:16:52 2015
+GPGPU-Sim PTX: 16500000 instructions simulated : ctaid=(171,0,0) tid=(31,0,0)
+GPGPU-Sim PTX: 16600000 instructions simulated : ctaid=(130,0,0) tid=(191,0,0)
+GPGPU-Sim PTX: 16700000 instructions simulated : ctaid=(175,0,0) tid=(95,0,0)
+GPGPU-Sim PTX: 16800000 instructions simulated : ctaid=(107,0,0) tid=(255,0,0)
+GPGPU-Sim PTX: 16900000 instructions simulated : ctaid=(136,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 17000000 instructions simulated : ctaid=(131,0,0) tid=(63,0,0)
+GPGPU-Sim uArch: cycles simulated: 28500  inst.: 16980736 (ipc=595.8) sim_rate=79721 (inst/sec) elapsed = 0:0:03:33 / Mon May 11 18:16:59 2015
+GPGPU-Sim PTX: 17100000 instructions simulated : ctaid=(154,0,0) tid=(223,0,0)
+GPGPU-Sim PTX: 17200000 instructions simulated : ctaid=(123,0,0) tid=(127,0,0)
+GPGPU-Sim PTX: 17300000 instructions simulated : ctaid=(133,0,0) tid=(31,0,0)
+GPGPU-Sim PTX: 17400000 instructions simulated : ctaid=(158,0,0) tid=(191,0,0)
+GPGPU-Sim PTX: 17500000 instructions simulated : ctaid=(166,0,0) tid=(95,0,0)
+GPGPU-Sim PTX: 17600000 instructions simulated : ctaid=(138,0,0) tid=(255,0,0)
+GPGPU-Sim uArch: cycles simulated: 29000  inst.: 17615360 (ipc=607.4) sim_rate=80069 (inst/sec) elapsed = 0:0:03:40 / Mon May 11 18:17:06 2015
+GPGPU-Sim PTX: 17700000 instructions simulated : ctaid=(115,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 17800000 instructions simulated : ctaid=(161,0,0) tid=(63,0,0)
+GPGPU-Sim PTX: 17900000 instructions simulated : ctaid=(122,0,0) tid=(223,0,0)
+GPGPU-Sim PTX: 18000000 instructions simulated : ctaid=(126,0,0) tid=(127,0,0)
+GPGPU-Sim PTX: 18100000 instructions simulated : ctaid=(162,0,0) tid=(31,0,0)
+GPGPU-Sim PTX: 18200000 instructions simulated : ctaid=(114,0,0) tid=(191,0,0)
+GPGPU-Sim uArch: cycles simulated: 29500  inst.: 18267904 (ipc=619.3) sim_rate=80122 (inst/sec) elapsed = 0:0:03:48 / Mon May 11 18:17:14 2015
+GPGPU-Sim PTX: 18300000 instructions simulated : ctaid=(158,0,0) tid=(95,0,0)
+GPGPU-Sim PTX: 18400000 instructions simulated : ctaid=(100,0,0) tid=(255,0,0)
+GPGPU-Sim PTX: 18500000 instructions simulated : ctaid=(148,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 18600000 instructions simulated : ctaid=(167,0,0) tid=(63,0,0)
+GPGPU-Sim PTX: 18700000 instructions simulated : ctaid=(96,0,0) tid=(223,0,0)
+GPGPU-Sim PTX: 18800000 instructions simulated : ctaid=(121,0,0) tid=(127,0,0)
+GPGPU-Sim PTX: 18900000 instructions simulated : ctaid=(163,0,0) tid=(31,0,0)
+GPGPU-Sim uArch: cycles simulated: 30000  inst.: 18886400 (ipc=629.5) sim_rate=80367 (inst/sec) elapsed = 0:0:03:55 / Mon May 11 18:17:21 2015
+GPGPU-Sim PTX: 19000000 instructions simulated : ctaid=(163,0,0) tid=(191,0,0)
+GPGPU-Sim PTX: 19100000 instructions simulated : ctaid=(127,0,0) tid=(95,0,0)
+GPGPU-Sim PTX: 19200000 instructions simulated : ctaid=(98,0,0) tid=(255,0,0)
+GPGPU-Sim PTX: 19300000 instructions simulated : ctaid=(141,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 19400000 instructions simulated : ctaid=(130,0,0) tid=(63,0,0)
+GPGPU-Sim PTX: 19500000 instructions simulated : ctaid=(140,0,0) tid=(223,0,0)
+GPGPU-Sim uArch: cycles simulated: 30500  inst.: 19527936 (ipc=640.3) sim_rate=80693 (inst/sec) elapsed = 0:0:04:02 / Mon May 11 18:17:28 2015
+GPGPU-Sim PTX: 19600000 instructions simulated : ctaid=(164,0,0) tid=(127,0,0)
+GPGPU-Sim PTX: 19700000 instructions simulated : ctaid=(161,0,0) tid=(31,0,0)
+GPGPU-Sim PTX: 19800000 instructions simulated : ctaid=(177,0,0) tid=(191,0,0)
+GPGPU-Sim PTX: 19900000 instructions simulated : ctaid=(155,0,0) tid=(95,0,0)
+GPGPU-Sim PTX: 20000000 instructions simulated : ctaid=(176,0,0) tid=(255,0,0)
+GPGPU-Sim PTX: 20100000 instructions simulated : ctaid=(97,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 20200000 instructions simulated : ctaid=(133,0,0) tid=(63,0,0)
+GPGPU-Sim uArch: cycles simulated: 31000  inst.: 20221696 (ipc=652.3) sim_rate=80564 (inst/sec) elapsed = 0:0:04:11 / Mon May 11 18:17:37 2015
+GPGPU-Sim PTX: 20300000 instructions simulated : ctaid=(155,0,0) tid=(223,0,0)
+GPGPU-Sim PTX: 20400000 instructions simulated : ctaid=(112,0,0) tid=(127,0,0)
+GPGPU-Sim PTX: 20500000 instructions simulated : ctaid=(111,0,0) tid=(31,0,0)
+GPGPU-Sim PTX: 20600000 instructions simulated : ctaid=(93,0,0) tid=(191,0,0)
+GPGPU-Sim PTX: 20700000 instructions simulated : ctaid=(134,0,0) tid=(95,0,0)
+GPGPU-Sim PTX: 20800000 instructions simulated : ctaid=(177,0,0) tid=(255,0,0)
+GPGPU-Sim uArch: cycles simulated: 31500  inst.: 20791040 (ipc=660.0) sim_rate=79965 (inst/sec) elapsed = 0:0:04:20 / Mon May 11 18:17:46 2015
+GPGPU-Sim PTX: 20900000 instructions simulated : ctaid=(171,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 21000000 instructions simulated : ctaid=(172,0,0) tid=(63,0,0)
+GPGPU-Sim uArch: Shader 0 finished CTA #0 (31877,0), 5 CTAs running
+GPGPU-Sim uArch: core:  0, cta: 0 initialized @(31878,0)
+GPGPU-Sim uArch: Shader 1 finished CTA #0 (31891,0), 5 CTAs running
+GPGPU-Sim uArch: core:  1, cta: 0 initialized @(31892,0)
+GPGPU-Sim uArch: Shader 0 finished CTA #1 (31953,0), 5 CTAs running
+GPGPU-Sim uArch: core:  0, cta: 1 initialized @(31954,0)
+GPGPU-Sim uArch: Shader 5 finished CTA #0 (31960,0), 5 CTAs running
+GPGPU-Sim uArch: core:  5, cta: 0 initialized @(31961,0)
+GPGPU-Sim uArch: Shader 4 finished CTA #0 (31973,0), 5 CTAs running
+GPGPU-Sim uArch: core:  4, cta: 0 initialized @(31974,0)
+GPGPU-Sim uArch: Shader 1 finished CTA #1 (31978,0), 5 CTAs running
+GPGPU-Sim uArch: core:  1, cta: 1 initialized @(31979,0)
+GPGPU-Sim uArch: cycles simulated: 32000  inst.: 21050880 (ipc=657.8) sim_rate=80041 (inst/sec) elapsed = 0:0:04:23 / Mon May 11 18:17:49 2015
+GPGPU-Sim uArch: Shader 4 finished CTA #1 (32005,0), 5 CTAs running
+GPGPU-Sim uArch: core:  4, cta: 1 initialized @(32006,0)
+GPGPU-Sim uArch: Shader 7 finished CTA #0 (32021,0), 5 CTAs running
+GPGPU-Sim uArch: core:  7, cta: 0 initialized @(32022,0)
+GPGPU-Sim uArch: Shader 0 finished CTA #2 (32044,0), 5 CTAs running
+GPGPU-Sim uArch: core:  0, cta: 2 initialized @(32045,0)
+GPGPU-Sim uArch: Shader 5 finished CTA #1 (32063,0), 5 CTAs running
+GPGPU-Sim uArch: core:  5, cta: 1 initialized @(32064,0)
+GPGPU-Sim uArch: Shader 7 finished CTA #1 (32081,0), 5 CTAs running
+GPGPU-Sim uArch: core:  7, cta: 1 initialized @(32082,0)
+GPGPU-Sim uArch: Shader 2 finished CTA #0 (32106,0), 5 CTAs running
+GPGPU-Sim uArch: core:  2, cta: 0 initialized @(32107,0)
+GPGPU-Sim uArch: Shader 4 finished CTA #2 (32129,0), 5 CTAs running
+GPGPU-Sim uArch: core:  4, cta: 2 initialized @(32130,0)
+GPGPU-Sim uArch: Shader 1 finished CTA #2 (32144,0), 5 CTAs running
+GPGPU-Sim uArch: core:  1, cta: 2 initialized @(32145,0)
+GPGPU-Sim uArch: Shader 6 finished CTA #0 (32187,0), 5 CTAs running
+GPGPU-Sim uArch: core:  6, cta: 0 initialized @(32188,0)
+GPGPU-Sim uArch: Shader 0 finished CTA #3 (32196,0), 5 CTAs running
+GPGPU-Sim uArch: core:  0, cta: 3 initialized @(32197,0)
+GPGPU-Sim uArch: Shader 6 finished CTA #1 (32206,0), 5 CTAs running
+GPGPU-Sim uArch: core:  6, cta: 1 initialized @(32207,0)
+GPGPU-Sim uArch: Shader 7 finished CTA #2 (32272,0), 5 CTAs running
+GPGPU-Sim uArch: core:  7, cta: 2 initialized @(32273,0)
+GPGPU-Sim uArch: Shader 10 finished CTA #0 (32298,0), 5 CTAs running
+GPGPU-Sim uArch: core: 10, cta: 0 initialized @(32299,0)
+GPGPU-Sim uArch: Shader 12 finished CTA #0 (32299,0), 5 CTAs running
+GPGPU-Sim uArch: core: 12, cta: 0 initialized @(32300,0)
+GPGPU-Sim uArch: Shader 3 finished CTA #0 (32319,0), 5 CTAs running
+GPGPU-Sim uArch: core:  3, cta: 0 initialized @(32320,0)
+GPGPU-Sim uArch: Shader 0 finished CTA #4 (32326,0), 5 CTAs running
+GPGPU-Sim uArch: core:  0, cta: 4 initialized @(32327,0)
+GPGPU-Sim uArch: Shader 2 finished CTA #1 (32329,0), 5 CTAs running
+GPGPU-Sim uArch: core:  2, cta: 1 initialized @(32330,0)
+GPGPU-Sim uArch: Shader 4 finished CTA #3 (32332,0), 5 CTAs running
+GPGPU-Sim uArch: core:  4, cta: 3 initialized @(32333,0)
+GPGPU-Sim uArch: Shader 1 finished CTA #3 (32352,0), 5 CTAs running
+GPGPU-Sim uArch: core:  1, cta: 3 initialized @(32353,0)
+GPGPU-Sim uArch: Shader 5 finished CTA #2 (32396,0), 5 CTAs running
+GPGPU-Sim uArch: core:  5, cta: 2 initialized @(32397,0)
+GPGPU-Sim uArch: Shader 10 finished CTA #1 (32453,0), 5 CTAs running
+GPGPU-Sim uArch: core: 10, cta: 1 initialized @(32454,0)
+GPGPU-Sim uArch: Shader 7 finished CTA #3 (32456,0), 5 CTAs running
+GPGPU-Sim uArch: core:  7, cta: 3 initialized @(32457,0)
+GPGPU-Sim uArch: Shader 6 finished CTA #2 (32472,0), 5 CTAs running
+GPGPU-Sim uArch: core:  6, cta: 2 initialized @(32473,0)
+GPGPU-Sim PTX: 21100000 instructions simulated : ctaid=(183,0,0) tid=(223,0,0)
+GPGPU-Sim uArch: cycles simulated: 32500  inst.: 21098496 (ipc=649.2) sim_rate=79918 (inst/sec) elapsed = 0:0:04:24 / Mon May 11 18:17:50 2015
+GPGPU-Sim uArch: Shader 0 finished CTA #5 (32519,0), 5 CTAs running
+GPGPU-Sim uArch: core:  0, cta: 5 initialized @(32520,0)
+GPGPU-Sim uArch: Shader 2 finished CTA #2 (32534,0), 5 CTAs running
+GPGPU-Sim uArch: core:  2, cta: 2 initialized @(32535,0)
+GPGPU-Sim uArch: Shader 11 finished CTA #0 (32540,0), 5 CTAs running
+GPGPU-Sim uArch: core: 11, cta: 0 initialized @(32541,0)
+GPGPU-Sim uArch: Shader 1 finished CTA #4 (32543,0), 5 CTAs running
+GPGPU-Sim uArch: core:  1, cta: 4 initialized @(32544,0)
+GPGPU-Sim uArch: Shader 14 finished CTA #0 (32553,0), 5 CTAs running
+GPGPU-Sim uArch: core: 14, cta: 0 initialized @(32554,0)
+GPGPU-Sim uArch: Shader 8 finished CTA #0 (32580,0), 5 CTAs running
+GPGPU-Sim uArch: core:  8, cta: 0 initialized @(32581,0)
+GPGPU-Sim uArch: Shader 7 finished CTA #4 (32617,0), 5 CTAs running
+GPGPU-Sim uArch: core:  7, cta: 4 initialized @(32618,0)
+GPGPU-Sim uArch: Shader 9 finished CTA #0 (32633,0), 5 CTAs running
+GPGPU-Sim uArch: core:  9, cta: 0 initialized @(32634,0)
+GPGPU-Sim uArch: Shader 4 finished CTA #4 (32638,0), 5 CTAs running
+GPGPU-Sim uArch: core:  4, cta: 4 initialized @(32639,0)
+GPGPU-Sim uArch: Shader 13 finished CTA #0 (32648,0), 5 CTAs running
+GPGPU-Sim uArch: core: 13, cta: 0 initialized @(32649,0)
+GPGPU-Sim uArch: Shader 2 finished CTA #3 (32663,0), 5 CTAs running
+GPGPU-Sim uArch: core:  2, cta: 3 initialized @(32664,0)
+GPGPU-Sim uArch: Shader 10 finished CTA #2 (32678,0), 5 CTAs running
+GPGPU-Sim uArch: core: 10, cta: 2 initialized @(32679,0)
+GPGPU-Sim uArch: Shader 3 finished CTA #1 (32682,0), 5 CTAs running
+GPGPU-Sim uArch: core:  3, cta: 1 initialized @(32683,0)
+GPGPU-Sim uArch: Shader 5 finished CTA #3 (32694,0), 5 CTAs running
+GPGPU-Sim uArch: core:  5, cta: 3 initialized @(32695,0)
+GPGPU-Sim uArch: Shader 6 finished CTA #3 (32719,0), 5 CTAs running
+GPGPU-Sim uArch: core:  6, cta: 3 initialized @(32720,0)
+GPGPU-Sim uArch: Shader 11 finished CTA #1 (32759,0), 5 CTAs running
+GPGPU-Sim uArch: core: 11, cta: 1 initialized @(32760,0)
+GPGPU-Sim uArch: Shader 12 finished CTA #1 (32763,0), 5 CTAs running
+GPGPU-Sim uArch: core: 12, cta: 1 initialized @(32764,0)
+GPGPU-Sim uArch: Shader 9 finished CTA #1 (32775,0), 5 CTAs running
+GPGPU-Sim uArch: core:  9, cta: 1 initialized @(32776,0)
+GPGPU-Sim uArch: Shader 1 finished CTA #5 (32780,0), 5 CTAs running
+GPGPU-Sim uArch: core:  1, cta: 5 initialized @(32781,0)
+GPGPU-Sim PTX: 21200000 instructions simulated : ctaid=(199,0,0) tid=(127,0,0)
+GPGPU-Sim uArch: Shader 14 finished CTA #1 (32847,0), 5 CTAs running
+GPGPU-Sim uArch: core: 14, cta: 1 initialized @(32848,0)
+GPGPU-Sim uArch: Shader 4 finished CTA #5 (32852,0), 5 CTAs running
+GPGPU-Sim uArch: core:  4, cta: 5 initialized @(32853,0)
+GPGPU-Sim uArch: Shader 13 finished CTA #1 (32859,0), 5 CTAs running
+GPGPU-Sim uArch: core: 13, cta: 1 initialized @(32860,0)
+GPGPU-Sim uArch: Shader 12 finished CTA #2 (32864,0), 5 CTAs running
+GPGPU-Sim uArch: core: 12, cta: 2 initialized @(32865,0)
+GPGPU-Sim uArch: Shader 7 finished CTA #5 (32866,0), 5 CTAs running
+GPGPU-Sim uArch: core:  7, cta: 5 initialized @(32867,0)
+GPGPU-Sim uArch: Shader 5 finished CTA #4 (32916,0), 5 CTAs running
+GPGPU-Sim uArch: core:  5, cta: 4 initialized @(32917,0)
+GPGPU-Sim uArch: Shader 6 finished CTA #4 (32922,0), 5 CTAs running
+GPGPU-Sim uArch: core:  6, cta: 4 initialized @(32923,0)
+GPGPU-Sim uArch: Shader 10 finished CTA #3 (32950,0), 5 CTAs running
+GPGPU-Sim uArch: core: 10, cta: 3 initialized @(32951,0)
+GPGPU-Sim uArch: Shader 9 finished CTA #2 (32963,0), 5 CTAs running
+GPGPU-Sim uArch: core:  9, cta: 2 initialized @(32964,0)
+GPGPU-Sim uArch: Shader 11 finished CTA #2 (32993,0), 5 CTAs running
+GPGPU-Sim uArch: core: 11, cta: 2 initialized @(32994,0)
+GPGPU-Sim uArch: cycles simulated: 33000  inst.: 21287936 (ipc=645.1) sim_rate=79432 (inst/sec) elapsed = 0:0:04:28 / Mon May 11 18:17:54 2015
+GPGPU-Sim uArch: Shader 8 finished CTA #1 (33000,0), 5 CTAs running
+GPGPU-Sim uArch: core:  8, cta: 1 initialized @(33001,0)
+GPGPU-Sim PTX: 21300000 instructions simulated : ctaid=(237,0,0) tid=(31,0,0)
+GPGPU-Sim uArch: Shader 2 finished CTA #4 (33015,0), 5 CTAs running
+GPGPU-Sim uArch: core:  2, cta: 4 initialized @(33016,0)
+GPGPU-Sim uArch: Shader 12 finished CTA #3 (33021,0), 5 CTAs running
+GPGPU-Sim uArch: core: 12, cta: 3 initialized @(33022,0)
+GPGPU-Sim uArch: Shader 3 finished CTA #2 (33044,0), 5 CTAs running
+GPGPU-Sim uArch: core:  3, cta: 2 initialized @(33045,0)
+GPGPU-Sim uArch: Shader 3 finished CTA #4 (33049,0), 5 CTAs running
+GPGPU-Sim uArch: core:  3, cta: 4 initialized @(33050,0)
+GPGPU-Sim uArch: Shader 8 finished CTA #2 (33056,0), 5 CTAs running
+GPGPU-Sim uArch: core:  8, cta: 2 initialized @(33057,0)
+GPGPU-Sim uArch: Shader 13 finished CTA #2 (33061,0), 5 CTAs running
+GPGPU-Sim uArch: core: 13, cta: 2 initialized @(33062,0)
+GPGPU-Sim uArch: Shader 14 finished CTA #2 (33143,0), 5 CTAs running
+GPGPU-Sim uArch: core: 14, cta: 2 initialized @(33144,0)
+GPGPU-Sim uArch: Shader 13 finished CTA #3 (33152,0), 5 CTAs running
+GPGPU-Sim uArch: core: 13, cta: 3 initialized @(33153,0)
+GPGPU-Sim uArch: Shader 5 finished CTA #5 (33153,0), 5 CTAs running
+GPGPU-Sim uArch: core:  5, cta: 5 initialized @(33154,0)
+GPGPU-Sim uArch: Shader 9 finished CTA #3 (33184,0), 5 CTAs running
+GPGPU-Sim uArch: core:  9, cta: 3 initialized @(33185,0)
+GPGPU-Sim uArch: Shader 8 finished CTA #3 (33200,0), 5 CTAs running
+GPGPU-Sim uArch: core:  8, cta: 3 initialized @(33201,0)
+GPGPU-Sim uArch: Shader 10 finished CTA #4 (33204,0), 5 CTAs running
+GPGPU-Sim uArch: core: 10, cta: 4 initialized @(33205,0)
+GPGPU-Sim uArch: Shader 3 finished CTA #3 (33223,0), 5 CTAs running
+GPGPU-Sim uArch: core:  3, cta: 3 initialized @(33224,0)
+GPGPU-Sim uArch: Shader 3 finished CTA #5 (33232,0), 5 CTAs running
+GPGPU-Sim uArch: core:  3, cta: 5 initialized @(33233,0)
+GPGPU-Sim uArch: Shader 14 finished CTA #3 (33240,0), 5 CTAs running
+GPGPU-Sim uArch: core: 14, cta: 3 initialized @(33241,0)
+GPGPU-Sim uArch: Shader 6 finished CTA #5 (33271,0), 5 CTAs running
+GPGPU-Sim uArch: core:  6, cta: 5 initialized @(33272,0)
+GPGPU-Sim uArch: Shader 12 finished CTA #4 (33292,0), 5 CTAs running
+GPGPU-Sim uArch: core: 12, cta: 4 initialized @(33293,0)
+GPGPU-Sim uArch: Shader 11 finished CTA #3 (33297,0), 5 CTAs running
+GPGPU-Sim uArch: core: 11, cta: 3 initialized @(33298,0)
+GPGPU-Sim uArch: Shader 8 finished CTA #4 (33303,0), 5 CTAs running
+GPGPU-Sim uArch: Shader 13 finished CTA #4 (33333,0), 5 CTAs running
+GPGPU-Sim uArch: Shader 2 finished CTA #5 (33351,0), 5 CTAs running
+GPGPU-Sim uArch: Shader 8 finished CTA #5 (33373,0), 4 CTAs running
+GPGPU-Sim PTX: 21400000 instructions simulated : ctaid=(195,0,0) tid=(191,0,0)
+GPGPU-Sim uArch: cycles simulated: 33500  inst.: 21379840 (ipc=638.2) sim_rate=79478 (inst/sec) elapsed = 0:0:04:29 / Mon May 11 18:17:55 2015
+GPGPU-Sim PTX: 21500000 instructions simulated : ctaid=(221,0,0) tid=(95,0,0)
+GPGPU-Sim uArch: Shader 10 finished CTA #5 (33904,0), 5 CTAs running
+GPGPU-Sim PTX: 21600000 instructions simulated : ctaid=(233,0,0) tid=(255,0,0)
+GPGPU-Sim uArch: Shader 14 finished CTA #4 (33927,0), 5 CTAs running
+GPGPU-Sim uArch: Shader 14 finished CTA #5 (33959,0), 4 CTAs running
+GPGPU-Sim uArch: Shader 9 finished CTA #4 (33968,0), 5 CTAs running
+GPGPU-Sim uArch: Shader 12 finished CTA #5 (33972,0), 5 CTAs running
+GPGPU-Sim uArch: Shader 11 finished CTA #5 (33976,0), 5 CTAs running
+GPGPU-Sim uArch: cycles simulated: 34000  inst.: 21630720 (ipc=636.2) sim_rate=79233 (inst/sec) elapsed = 0:0:04:33 / Mon May 11 18:17:59 2015
+GPGPU-Sim uArch: Shader 13 finished CTA #5 (34032,0), 4 CTAs running
+GPGPU-Sim uArch: Shader 9 finished CTA #5 (34056,0), 4 CTAs running
+GPGPU-Sim uArch: Shader 11 finished CTA #4 (34060,0), 4 CTAs running
+GPGPU-Sim PTX: 21700000 instructions simulated : ctaid=(205,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 21800000 instructions simulated : ctaid=(203,0,0) tid=(63,0,0)
+GPGPU-Sim PTX: 21900000 instructions simulated : ctaid=(247,0,0) tid=(223,0,0)
+GPGPU-Sim PTX: 22000000 instructions simulated : ctaid=(197,0,0) tid=(127,0,0)
+GPGPU-Sim PTX: 22100000 instructions simulated : ctaid=(233,0,0) tid=(31,0,0)
+GPGPU-Sim PTX: 22200000 instructions simulated : ctaid=(239,0,0) tid=(191,0,0)
+GPGPU-Sim uArch: cycles simulated: 34500  inst.: 22275328 (ipc=645.7) sim_rate=79271 (inst/sec) elapsed = 0:0:04:41 / Mon May 11 18:18:07 2015
+GPGPU-Sim PTX: 22300000 instructions simulated : ctaid=(221,0,0) tid=(95,0,0)
+GPGPU-Sim PTX: 22400000 instructions simulated : ctaid=(229,0,0) tid=(255,0,0)
+GPGPU-Sim PTX: 22500000 instructions simulated : ctaid=(214,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 22600000 instructions simulated : ctaid=(240,0,0) tid=(63,0,0)
+GPGPU-Sim PTX: 22700000 instructions simulated : ctaid=(185,0,0) tid=(223,0,0)
+GPGPU-Sim PTX: 22800000 instructions simulated : ctaid=(197,0,0) tid=(127,0,0)
+GPGPU-Sim uArch: cycles simulated: 35000  inst.: 22800128 (ipc=651.4) sim_rate=79442 (inst/sec) elapsed = 0:0:04:47 / Mon May 11 18:18:13 2015
+GPGPU-Sim PTX: 22900000 instructions simulated : ctaid=(215,0,0) tid=(31,0,0)
+GPGPU-Sim PTX: 23000000 instructions simulated : ctaid=(204,0,0) tid=(191,0,0)
+GPGPU-Sim PTX: 23100000 instructions simulated : ctaid=(222,0,0) tid=(95,0,0)
+GPGPU-Sim PTX: 23200000 instructions simulated : ctaid=(200,0,0) tid=(255,0,0)
+GPGPU-Sim PTX: 23300000 instructions simulated : ctaid=(192,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 23400000 instructions simulated : ctaid=(185,0,0) tid=(63,0,0)
+GPGPU-Sim uArch: cycles simulated: 35500  inst.: 23390208 (ipc=658.9) sim_rate=79288 (inst/sec) elapsed = 0:0:04:55 / Mon May 11 18:18:21 2015
+GPGPU-Sim PTX: 23500000 instructions simulated : ctaid=(207,0,0) tid=(223,0,0)
+GPGPU-Sim PTX: 23600000 instructions simulated : ctaid=(218,0,0) tid=(127,0,0)
+GPGPU-Sim PTX: 23700000 instructions simulated : ctaid=(242,0,0) tid=(31,0,0)
+GPGPU-Sim PTX: 23800000 instructions simulated : ctaid=(254,0,0) tid=(191,0,0)
+GPGPU-Sim PTX: 23900000 instructions simulated : ctaid=(185,0,0) tid=(95,0,0)
+GPGPU-Sim uArch: cycles simulated: 36000  inst.: 23952640 (ipc=665.4) sim_rate=79576 (inst/sec) elapsed = 0:0:05:01 / Mon May 11 18:18:27 2015
+GPGPU-Sim PTX: 24000000 instructions simulated : ctaid=(243,0,0) tid=(255,0,0)
+GPGPU-Sim PTX: 24100000 instructions simulated : ctaid=(228,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 24200000 instructions simulated : ctaid=(199,0,0) tid=(63,0,0)
+GPGPU-Sim PTX: 24300000 instructions simulated : ctaid=(202,0,0) tid=(223,0,0)
+GPGPU-Sim PTX: 24400000 instructions simulated : ctaid=(228,0,0) tid=(127,0,0)
+GPGPU-Sim PTX: 24500000 instructions simulated : ctaid=(255,0,0) tid=(31,0,0)
+GPGPU-Sim uArch: cycles simulated: 36500  inst.: 24536064 (ipc=672.2) sim_rate=79922 (inst/sec) elapsed = 0:0:05:07 / Mon May 11 18:18:33 2015
+GPGPU-Sim PTX: 24600000 instructions simulated : ctaid=(182,0,0) tid=(191,0,0)
+GPGPU-Sim PTX: 24700000 instructions simulated : ctaid=(207,0,0) tid=(95,0,0)
+GPGPU-Sim PTX: 24800000 instructions simulated : ctaid=(220,0,0) tid=(255,0,0)
+GPGPU-Sim PTX: 24900000 instructions simulated : ctaid=(218,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 25000000 instructions simulated : ctaid=(209,0,0) tid=(63,0,0)
+GPGPU-Sim PTX: 25100000 instructions simulated : ctaid=(235,0,0) tid=(223,0,0)
+GPGPU-Sim uArch: cycles simulated: 37000  inst.: 25135104 (ipc=679.3) sim_rate=80048 (inst/sec) elapsed = 0:0:05:14 / Mon May 11 18:18:40 2015
+GPGPU-Sim PTX: 25200000 instructions simulated : ctaid=(218,0,0) tid=(127,0,0)
+GPGPU-Sim PTX: 25300000 instructions simulated : ctaid=(182,0,0) tid=(31,0,0)
+GPGPU-Sim PTX: 25400000 instructions simulated : ctaid=(203,0,0) tid=(191,0,0)
+GPGPU-Sim PTX: 25500000 instructions simulated : ctaid=(256,0,0) tid=(95,0,0)
+GPGPU-Sim PTX: 25600000 instructions simulated : ctaid=(187,0,0) tid=(255,0,0)
+GPGPU-Sim PTX: 25700000 instructions simulated : ctaid=(192,0,0) tid=(159,0,0)
+GPGPU-Sim uArch: cycles simulated: 37500  inst.: 25713920 (ipc=685.7) sim_rate=80105 (inst/sec) elapsed = 0:0:05:21 / Mon May 11 18:18:47 2015
+GPGPU-Sim PTX: 25800000 instructions simulated : ctaid=(213,0,0) tid=(63,0,0)
+GPGPU-Sim PTX: 25900000 instructions simulated : ctaid=(194,0,0) tid=(223,0,0)
+GPGPU-Sim PTX: 26000000 instructions simulated : ctaid=(185,0,0) tid=(127,0,0)
+GPGPU-Sim PTX: 26100000 instructions simulated : ctaid=(205,0,0) tid=(31,0,0)
+GPGPU-Sim PTX: 26200000 instructions simulated : ctaid=(208,0,0) tid=(191,0,0)
+GPGPU-Sim PTX: 26300000 instructions simulated : ctaid=(221,0,0) tid=(95,0,0)
+GPGPU-Sim uArch: cycles simulated: 38000  inst.: 26307072 (ipc=692.3) sim_rate=80204 (inst/sec) elapsed = 0:0:05:28 / Mon May 11 18:18:54 2015
+GPGPU-Sim PTX: 26400000 instructions simulated : ctaid=(252,0,0) tid=(255,0,0)
+GPGPU-Sim PTX: 26500000 instructions simulated : ctaid=(234,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 26600000 instructions simulated : ctaid=(229,0,0) tid=(63,0,0)
+GPGPU-Sim PTX: 26700000 instructions simulated : ctaid=(185,0,0) tid=(223,0,0)
+GPGPU-Sim PTX: 26800000 instructions simulated : ctaid=(243,0,0) tid=(127,0,0)
+GPGPU-Sim uArch: cycles simulated: 38500  inst.: 26860032 (ipc=697.7) sim_rate=80419 (inst/sec) elapsed = 0:0:05:34 / Mon May 11 18:19:00 2015
+GPGPU-Sim PTX: 26900000 instructions simulated : ctaid=(180,0,0) tid=(31,0,0)
+GPGPU-Sim PTX: 27000000 instructions simulated : ctaid=(189,0,0) tid=(191,0,0)
+GPGPU-Sim PTX: 27100000 instructions simulated : ctaid=(218,0,0) tid=(95,0,0)
+GPGPU-Sim PTX: 27200000 instructions simulated : ctaid=(211,0,0) tid=(255,0,0)
+GPGPU-Sim PTX: 27300000 instructions simulated : ctaid=(221,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 27400000 instructions simulated : ctaid=(191,0,0) tid=(63,0,0)
+GPGPU-Sim uArch: cycles simulated: 39000  inst.: 27460608 (ipc=704.1) sim_rate=80766 (inst/sec) elapsed = 0:0:05:40 / Mon May 11 18:19:06 2015
+GPGPU-Sim PTX: 27500000 instructions simulated : ctaid=(223,0,0) tid=(223,0,0)
+GPGPU-Sim PTX: 27600000 instructions simulated : ctaid=(232,0,0) tid=(127,0,0)
+GPGPU-Sim PTX: 27700000 instructions simulated : ctaid=(200,0,0) tid=(31,0,0)
+GPGPU-Sim PTX: 27800000 instructions simulated : ctaid=(235,0,0) tid=(191,0,0)
+GPGPU-Sim PTX: 27900000 instructions simulated : ctaid=(229,0,0) tid=(95,0,0)
+GPGPU-Sim PTX: 28000000 instructions simulated : ctaid=(218,0,0) tid=(255,0,0)
+GPGPU-Sim uArch: cycles simulated: 39500  inst.: 28030976 (ipc=709.6) sim_rate=80780 (inst/sec) elapsed = 0:0:05:47 / Mon May 11 18:19:13 2015
+GPGPU-Sim PTX: 28100000 instructions simulated : ctaid=(201,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 28200000 instructions simulated : ctaid=(224,0,0) tid=(63,0,0)
+GPGPU-Sim PTX: 28300000 instructions simulated : ctaid=(188,0,0) tid=(223,0,0)
+GPGPU-Sim PTX: 28400000 instructions simulated : ctaid=(202,0,0) tid=(127,0,0)
+GPGPU-Sim PTX: 28500000 instructions simulated : ctaid=(229,0,0) tid=(31,0,0)
+GPGPU-Sim PTX: 28600000 instructions simulated : ctaid=(246,0,0) tid=(191,0,0)
+GPGPU-Sim uArch: cycles simulated: 40000  inst.: 28615168 (ipc=715.4) sim_rate=81062 (inst/sec) elapsed = 0:0:05:53 / Mon May 11 18:19:19 2015
+GPGPU-Sim PTX: 28700000 instructions simulated : ctaid=(182,0,0) tid=(95,0,0)
+GPGPU-Sim PTX: 28800000 instructions simulated : ctaid=(240,0,0) tid=(255,0,0)
+GPGPU-Sim PTX: 28900000 instructions simulated : ctaid=(242,0,0) tid=(159,0,0)
+GPGPU-Sim PTX: 29000000 instructions simulated : ctaid=(200,0,0) tid=(63,0,0)
+GPGPU-Sim PTX: 29100000 instructions simulated : ctaid=(226,0,0) tid=(223,0,0)
+GPGPU-Sim PTX: 29200000 instructions simulated : ctaid=(245,0,0) tid=(127,0,0)
+GPGPU-Sim uArch: cycles simulated: 40500  inst.: 29210368 (ipc=721.2) sim_rate=81139 (inst/sec) elapsed = 0:0:06:00 / Mon May 11 18:19:26 2015
+GPGPU-Sim PTX: 29300000 instructions simulated : ctaid=(221,0,0) tid=(31,0,0)
+GPGPU-Sim PTX: 29400000 instructions simulated : ctaid=(246,0,0) tid=(191,0,0)
+GPGPU-Sim PTX: 29500000 instructions simulated : ctaid=(215,0,0) tid=(95,0,0)
+GPGPU-Sim PTX: 29600000 instructions simulated : ctaid=(205,0,0) tid=(255,0,0)
+GPGPU-Sim PTX: 29700000 instructions simulated : ctaid=(229,0,0) tid=(159,0,0)
+GPGPU-Sim uArch: cycles simulated: 41000  inst.: 29748736 (ipc=725.6) sim_rate=81280 (inst/sec) elapsed = 0:0:06:06 / Mon May 11 18:19:32 2015
+GPGPU-Sim PTX: 29800000 instructions simulated : ctaid=(200,0,0) tid=(63,0,0)
+GPGPU-Sim PTX: 29900000 instructions simulated : ctaid=(205,0,0) tid=(223,0,0)
+GPGPU-Sim uArch: Shader 11 finished CTA #0 (41286,0), 3 CTAs running
+GPGPU-Sim PTX: 30000000 instructions simulated : ctaid=(201,0,0) tid=(127,0,0)
+GPGPU-Sim uArch: Shader 9 finished CTA #0 (41343,0), 3 CTAs running
+GPGPU-Sim uArch: Shader 11 finished CTA #1 (41343,0), 2 CTAs running
+GPGPU-Sim uArch: Shader 13 finished CTA #0 (41405,0), 3 CTAs running
+GPGPU-Sim uArch: Shader 14 finished CTA #0 (41414,0), 3 CTAs running
+GPGPU-Sim uArch: Shader 9 finished CTA #1 (41428,0), 2 CTAs running
+GPGPU-Sim uArch: Shader 8 finished CTA #0 (41477,0), 3 CTAs running
+GPGPU-Sim uArch: Shader 11 finished CTA #3 (41486,0), 1 CTAs running
+GPGPU-Sim uArch: Shader 13 finished CTA #1 (41487,0), 2 CTAs running
+GPGPU-Sim uArch: Shader 11 finished CTA #2 (41490,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 11 empty (release kernel 1 '_Z13aesEncrypt128PjS_i').
+GPGPU-Sim uArch: Shader 14 finished CTA #2 (41496,0), 2 CTAs running
+GPGPU-Sim uArch: cycles simulated: 41500  inst.: 30048256 (ipc=724.1) sim_rate=81211 (inst/sec) elapsed = 0:0:06:10 / Mon May 11 18:19:36 2015
+GPGPU-Sim uArch: Shader 13 finished CTA #3 (41537,0), 1 CTAs running
+GPGPU-Sim uArch: Shader 13 finished CTA #2 (41584,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 13 empty (release kernel 1 '_Z13aesEncrypt128PjS_i').
+GPGPU-Sim uArch: Shader 14 finished CTA #1 (41584,0), 1 CTAs running
+GPGPU-Sim uArch: Shader 9 finished CTA #2 (41585,0), 1 CTAs running
+GPGPU-Sim uArch: Shader 8 finished CTA #1 (41588,0), 2 CTAs running
+GPGPU-Sim uArch: Shader 9 finished CTA #3 (41594,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 9 empty (release kernel 1 '_Z13aesEncrypt128PjS_i').
+GPGPU-Sim uArch: Shader 8 finished CTA #2 (41635,0), 1 CTAs running
+GPGPU-Sim uArch: Shader 2 finished CTA #0 (41675,0), 4 CTAs running
+GPGPU-Sim uArch: Shader 10 finished CTA #0 (41684,0), 4 CTAs running
+GPGPU-Sim uArch: Shader 14 finished CTA #3 (41689,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 14 empty (release kernel 1 '_Z13aesEncrypt128PjS_i').
+GPGPU-Sim uArch: Shader 12 finished CTA #0 (41707,0), 4 CTAs running
+GPGPU-Sim uArch: Shader 8 finished CTA #3 (41728,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 8 empty (release kernel 1 '_Z13aesEncrypt128PjS_i').
+GPGPU-Sim uArch: Shader 2 finished CTA #1 (41741,0), 3 CTAs running
+GPGPU-Sim uArch: Shader 10 finished CTA #1 (41746,0), 3 CTAs running
+GPGPU-Sim uArch: Shader 1 finished CTA #0 (41774,0), 5 CTAs running
+GPGPU-Sim uArch: Shader 12 finished CTA #1 (41805,0), 3 CTAs running
+GPGPU-Sim uArch: Shader 10 finished CTA #2 (41817,0), 2 CTAs running
+GPGPU-Sim uArch: Shader 6 finished CTA #0 (41819,0), 5 CTAs running
+GPGPU-Sim uArch: Shader 2 finished CTA #2 (41842,0), 2 CTAs running
+GPGPU-Sim uArch: Shader 1 finished CTA #1 (41864,0), 4 CTAs running
+GPGPU-Sim uArch: Shader 0 finished CTA #0 (41878,0), 5 CTAs running
+GPGPU-Sim uArch: Shader 7 finished CTA #0 (41917,0), 5 CTAs running
+GPGPU-Sim uArch: Shader 3 finished CTA #0 (41923,0), 5 CTAs running
+GPGPU-Sim uArch: Shader 10 finished CTA #4 (41931,0), 1 CTAs running
+GPGPU-Sim uArch: Shader 2 finished CTA #4 (41933,0), 1 CTAs running
+GPGPU-Sim uArch: Shader 4 finished CTA #0 (41965,0), 5 CTAs running
+GPGPU-Sim uArch: Shader 10 finished CTA #3 (41968,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 10 empty (release kernel 1 '_Z13aesEncrypt128PjS_i').
+GPGPU-Sim uArch: Shader 5 finished CTA #0 (41980,0), 5 CTAs running
+GPGPU-Sim uArch: Shader 0 finished CTA #1 (41981,0), 4 CTAs running
+GPGPU-Sim uArch: Shader 12 finished CTA #2 (41983,0), 2 CTAs running
+GPGPU-Sim uArch: Shader 12 finished CTA #3 (41991,0), 1 CTAs running
+GPGPU-Sim uArch: cycles simulated: 42000  inst.: 30066944 (ipc=715.9) sim_rate=81042 (inst/sec) elapsed = 0:0:06:11 / Mon May 11 18:19:37 2015
+GPGPU-Sim uArch: Shader 6 finished CTA #1 (42009,0), 4 CTAs running
+GPGPU-Sim uArch: Shader 3 finished CTA #1 (42027,0), 4 CTAs running
+GPGPU-Sim uArch: Shader 2 finished CTA #3 (42029,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 2 empty (release kernel 1 '_Z13aesEncrypt128PjS_i').
+GPGPU-Sim uArch: Shader 0 finished CTA #2 (42065,0), 3 CTAs running
+GPGPU-Sim uArch: Shader 4 finished CTA #1 (42077,0), 4 CTAs running
+GPGPU-Sim uArch: Shader 12 finished CTA #4 (42079,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 12 empty (release kernel 1 '_Z13aesEncrypt128PjS_i').
+GPGPU-Sim uArch: Shader 6 finished CTA #2 (42088,0), 3 CTAs running
+GPGPU-Sim uArch: Shader 7 finished CTA #2 (42109,0), 4 CTAs running
+GPGPU-Sim uArch: Shader 7 finished CTA #1 (42119,0), 3 CTAs running
+GPGPU-Sim uArch: Shader 4 finished CTA #2 (42130,0), 3 CTAs running
+GPGPU-Sim uArch: Shader 3 finished CTA #4 (42135,0), 3 CTAs running
+GPGPU-Sim uArch: Shader 3 finished CTA #2 (42138,0), 2 CTAs running
+GPGPU-Sim uArch: Shader 5 finished CTA #1 (42172,0), 4 CTAs running
+GPGPU-Sim uArch: Shader 4 finished CTA #3 (42181,0), 2 CTAs running
+GPGPU-Sim uArch: Shader 1 finished CTA #2 (42228,0), 3 CTAs running
+GPGPU-Sim uArch: Shader 1 finished CTA #3 (42238,0), 2 CTAs running
+GPGPU-Sim uArch: Shader 6 finished CTA #5 (42253,0), 2 CTAs running
+GPGPU-Sim uArch: Shader 6 finished CTA #3 (42260,0), 1 CTAs running
+GPGPU-Sim uArch: Shader 1 finished CTA #4 (42261,0), 1 CTAs running
+GPGPU-Sim uArch: Shader 6 finished CTA #4 (42269,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 6 empty (release kernel 1 '_Z13aesEncrypt128PjS_i').
+GPGPU-Sim uArch: Shader 3 finished CTA #3 (42310,0), 1 CTAs running
+GPGPU-Sim uArch: Shader 5 finished CTA #2 (42334,0), 3 CTAs running
+GPGPU-Sim uArch: Shader 7 finished CTA #4 (42350,0), 2 CTAs running
+GPGPU-Sim uArch: Shader 7 finished CTA #3 (42362,0), 1 CTAs running
+GPGPU-Sim uArch: Shader 4 finished CTA #4 (42405,0), 1 CTAs running
+GPGPU-Sim uArch: Shader 0 finished CTA #3 (42406,0), 2 CTAs running
+GPGPU-Sim uArch: Shader 5 finished CTA #4 (42453,0), 2 CTAs running
+GPGPU-Sim uArch: Shader 5 finished CTA #5 (42473,0), 1 CTAs running
+GPGPU-Sim uArch: Shader 4 finished CTA #5 (42476,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 4 empty (release kernel 1 '_Z13aesEncrypt128PjS_i').
+GPGPU-Sim uArch: Shader 3 finished CTA #5 (42478,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 3 empty (release kernel 1 '_Z13aesEncrypt128PjS_i').
+GPGPU-Sim uArch: Shader 1 finished CTA #5 (42484,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 1 empty (release kernel 1 '_Z13aesEncrypt128PjS_i').
+GPGPU-Sim uArch: Shader 5 finished CTA #3 (42491,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 5 empty (release kernel 1 '_Z13aesEncrypt128PjS_i').
+GPGPU-Sim uArch: Shader 7 finished CTA #5 (42544,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 7 empty (release kernel 1 '_Z13aesEncrypt128PjS_i').
+GPGPU-Sim uArch: Shader 0 finished CTA #5 (42546,0), 1 CTAs running
+GPGPU-Sim uArch: Shader 0 finished CTA #4 (42553,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 0 empty (release kernel 1 '_Z13aesEncrypt128PjS_i').
+GPGPU-Sim uArch: GPU detected kernel '_Z13aesEncrypt128PjS_i' finished on shader 0.
+kernel_name = _Z13aesEncrypt128PjS_i 
+kernel_launch_uid = 1 
+gpu_sim_cycle = 42554
+gpu_sim_insn = 30066944
+gpu_ipc =     706.5598
+gpu_tot_sim_cycle = 42554
+gpu_tot_sim_insn = 30066944
+gpu_tot_ipc =     706.5598
+gpu_tot_issued_cta = 0
+gpu_stall_dramfull = 27624
+gpu_stall_icnt2sh    = 18712
+gpu_total_sim_rate=81042
+
+========= Core cache stats =========
+L1I_cache:
+	L1I_total_cache_accesses = 66018
+	L1I_total_cache_misses = 7165
+	L1I_total_cache_miss_rate = 0.1085
+	L1I_total_cache_pending_hits = 0
+	L1I_total_cache_reservation_fails = 0
+L1D_cache:
+	L1D_cache_core[0]: Access = 288, Miss = 288, Miss_rate = 1.000, Pending_hits = 0, Reservation_fails = 2283
+	L1D_cache_core[1]: Access = 288, Miss = 288, Miss_rate = 1.000, Pending_hits = 0, Reservation_fails = 1872
+	L1D_cache_core[2]: Access = 272, Miss = 272, Miss_rate = 1.000, Pending_hits = 0, Reservation_fails = 1956
+	L1D_cache_core[3]: Access = 288, Miss = 288, Miss_rate = 1.000, Pending_hits = 0, Reservation_fails = 1544
+	L1D_cache_core[4]: Access = 288, Miss = 288, Miss_rate = 1.000, Pending_hits = 0, Reservation_fails = 1943
+	L1D_cache_core[5]: Access = 288, Miss = 288, Miss_rate = 1.000, Pending_hits = 0, Reservation_fails = 1876
+	L1D_cache_core[6]: Access = 288, Miss = 288, Miss_rate = 1.000, Pending_hits = 0, Reservation_fails = 2024
+	L1D_cache_core[7]: Access = 288, Miss = 288, Miss_rate = 1.000, Pending_hits = 0, Reservation_fails = 1969
+	L1D_cache_core[8]: Access = 256, Miss = 256, Miss_rate = 1.000, Pending_hits = 0, Reservation_fails = 1899
+	L1D_cache_core[9]: Access = 256, Miss = 256, Miss_rate = 1.000, Pending_hits = 0, Reservation_fails = 1920
+	L1D_cache_core[10]: Access = 272, Miss = 272, Miss_rate = 1.000, Pending_hits = 0, Reservation_fails = 1757
+	L1D_cache_core[11]: Access = 256, Miss = 256, Miss_rate = 1.000, Pending_hits = 0, Reservation_fails = 2059
+	L1D_cache_core[12]: Access = 272, Miss = 272, Miss_rate = 1.000, Pending_hits = 0, Reservation_fails = 1732
+	L1D_cache_core[13]: Access = 256, Miss = 256, Miss_rate = 1.000, Pending_hits = 0, Reservation_fails = 1809
+	L1D_cache_core[14]: Access = 256, Miss = 256, Miss_rate = 1.000, Pending_hits = 0, Reservation_fails = 2018
+	L1D_total_cache_accesses = 4112
+	L1D_total_cache_misses = 4112
+	L1D_total_cache_miss_rate = 1.0000
+	L1D_total_cache_pending_hits = 0
+	L1D_total_cache_reservation_fails = 28661
+	L1D_cache_data_port_util = 0.000
+	L1D_cache_fill_port_util = 0.003
+L1C_cache:
+	L1C_total_cache_accesses = 28784
+	L1C_total_cache_misses = 2520
+	L1C_total_cache_miss_rate = 0.0875
+	L1C_total_cache_pending_hits = 0
+	L1C_total_cache_reservation_fails = 120136
+L1T_cache:
+	L1T_total_cache_accesses = 22616
+	L1T_total_cache_misses = 30
+	L1T_total_cache_miss_rate = 0.0013
+	L1T_total_cache_pending_hits = 22586
+	L1T_total_cache_reservation_fails = 0
+
+Total_core_cache_stats:
+	Total_core_cache_stats_breakdown[GLOBAL_ACC_R][MISS] = 2056
+	Total_core_cache_stats_breakdown[GLOBAL_ACC_R][RESERVATION_FAIL] = 17393
+	Total_core_cache_stats_breakdown[CONST_ACC_R][HIT] = 26264
+	Total_core_cache_stats_breakdown[CONST_ACC_R][MISS] = 2520
+	Total_core_cache_stats_breakdown[CONST_ACC_R][RESERVATION_FAIL] = 120136
+	Total_core_cache_stats_breakdown[TEXTURE_ACC_R][HIT_RESERVED] = 22586
+	Total_core_cache_stats_breakdown[TEXTURE_ACC_R][MISS] = 30
+	Total_core_cache_stats_breakdown[GLOBAL_ACC_W][MISS] = 2056
+	Total_core_cache_stats_breakdown[GLOBAL_ACC_W][RESERVATION_FAIL] = 11268
+	Total_core_cache_stats_breakdown[INST_ACC_R][HIT] = 58853
+	Total_core_cache_stats_breakdown[INST_ACC_R][MISS] = 7165
+Shader 0 warp_id issue ditsribution:
+warp_id:
+0, 1, 2, 3, 4, 5, 
+distro:
+1371, 1371, 1371, 1371, 1371, 1371, 
+gpgpu_n_tot_thrd_icount = 30066944
+gpgpu_n_tot_w_icount = 117449
+gpgpu_n_stall_shd_mem = 341708
+gpgpu_n_mem_read_local = 0
+gpgpu_n_mem_write_local = 0
+gpgpu_n_mem_read_global = 2056
+gpgpu_n_mem_write_global = 2056
+gpgpu_n_mem_texture = 30
+gpgpu_n_mem_const = 990
+gpgpu_n_load_insn  = 65792
+gpgpu_n_store_insn = 65792
+gpgpu_n_shmem_insn = 6644992
+gpgpu_n_tex_insn = 723712
+gpgpu_n_const_mem_insn = 526336
+gpgpu_n_param_mem_insn = 131584
+gpgpu_n_shmem_bkconflict = 0
+gpgpu_n_cache_bkconflict = 0
+gpgpu_n_intrawarp_mshr_merge = 0
+gpgpu_n_cmem_portconflict = 146350
+gpgpu_stall_shd_mem[c_mem][bk_conf] = 146350
+gpgpu_stall_shd_mem[c_mem][mshr_rc] = 0
+gpgpu_stall_shd_mem[c_mem][icnt_rc] = 0
+gpgpu_stall_shd_mem[c_mem][data_port_stall] = 0
+gpgpu_stall_shd_mem[t_mem][mshr_rc] = 0
+gpgpu_stall_shd_mem[t_mem][icnt_rc] = 0
+gpgpu_stall_shd_mem[t_mem][data_port_stall] = 0
+gpgpu_stall_shd_mem[s_mem][bk_conf] = 143310
+gpgpu_stall_shd_mem[gl_mem][bk_conf] = 0
+gpgpu_stall_shd_mem[gl_mem][coal_stall] = 32259
+gpgpu_stall_shd_mem[gl_mem][data_port_stall] = 0
+gpgpu_stall_shd_mem[g_mem_ld][mshr_rc] = 0
+gpgpu_stall_shd_mem[g_mem_ld][icnt_rc] = 0
+gpgpu_stall_shd_mem[g_mem_ld][wb_icnt_rc] = 0
+gpgpu_stall_shd_mem[g_mem_ld][wb_rsrv_fail] = 0
+gpgpu_stall_shd_mem[g_mem_st][mshr_rc] = 0
+gpgpu_stall_shd_mem[g_mem_st][icnt_rc] = 0
+gpgpu_stall_shd_mem[g_mem_st][wb_icnt_rc] = 0
+gpgpu_stall_shd_mem[g_mem_st][wb_rsrv_fail] = 0
+gpgpu_stall_shd_mem[l_mem_ld][mshr_rc] = 0
+gpgpu_stall_shd_mem[l_mem_ld][icnt_rc] = 0
+gpgpu_stall_shd_mem[l_mem_ld][wb_icnt_rc] = 0
+gpgpu_stall_shd_mem[l_mem_ld][wb_rsrv_fail] = 0
+gpgpu_stall_shd_mem[l_mem_st][mshr_rc] = 0
+gpgpu_stall_shd_mem[l_mem_st][icnt_rc] = 0
+gpgpu_stall_shd_mem[l_mem_ld][wb_icnt_rc] = 0
+gpgpu_stall_shd_mem[l_mem_ld][wb_rsrv_fail] = 0
+gpu_reg_bank_conflict_stalls = 0
+Warp Occupancy Distribution:
+Stall:168784	W0_Idle:184739	W0_Scoreboard:160499	W1:0	W2:0	W3:0	W4:0	W5:0	W6:0	W7:0	W8:0	W9:0	W10:0	W11:0	W12:0	W13:0	W14:0	W15:0	W16:0	W17:0	W18:0	W19:0	W20:0	W21:0	W22:0	W23:0	W24:0	W25:0	W26:0	W27:0	W28:0	W29:0	W30:0	W31:0	W32:0	W33:0	W34:0	W35:0	W36:0	W37:0	W38:0	W39:0	W40:0	W41:0	W42:0	W43:0	W44:0	W45:0	W46:0	W47:0	W48:0	W49:0	W50:0	W51:0	W52:0	W53:0	W54:0	W55:0	W56:0	W57:0	W58:0	W59:0	W60:0	W61:0	W62:0	W63:0	W64:0	W65:0	W66:0	W67:0	W68:0	W69:0	W70:0	W71:0	W72:0	W73:0	W74:0	W75:0	W76:0	W77:0	W78:0	W79:0	W80:0	W81:0	W82:0	W83:0	W84:0	W85:0	W86:0	W87:0	W88:0	W89:0	W90:0	W91:0	W92:0	W93:0	W94:0	W95:0	W96:0	W97:0	W98:0	W99:0	W100:0	W101:0	W102:0	W103:0	W104:0	W105:0	W106:0	W107:0	W108:0	W109:0	W110:0	W111:0	W112:0	W113:0	W114:0	W115:0	W116:0	W117:0	W118:0	W119:0	W120:0	W121:0	W122:0	W123:0	W124:0	W125:0	W126:0	W127:0	W128:0	W129:0	W130:0	W131:0	W132:0	W133:0	W134:0	W135:0	W136:0	W137:0	W138:0	W139:0	W140:0	W141:0	W142:0	W143:0	W144:0	W145:0	W146:0	W147:0	W148:0	W149:0	W150:0	W151:0	W152:0	W153:0	W154:0	W155:0	W156:0	W157:0	W158:0	W159:0	W160:0	W161:0	W162:0	W163:0	W164:0	W165:0	W166:0	W167:0	W168:0	W169:0	W170:0	W171:0	W172:0	W173:0	W174:0	W175:0	W176:0	W177:0	W178:0	W179:0	W180:0	W181:0	W182:0	W183:0	W184:0	W185:0	W186:0	W187:0	W188:0	W189:0	W190:0	W191:0	W192:0	W193:0	W194:0	W195:0	W196:0	W197:0	W198:0	W199:0	W200:0	W201:0	W202:0	W203:0	W204:0	W205:0	W206:0	W207:0	W208:0	W209:0	W210:0	W211:0	W212:0	W213:0	W214:0	W215:0	W216:0	W217:0	W218:0	W219:0	W220:0	W221:0	W222:0	W223:0	W224:0	W225:0	W226:0	W227:0	W228:0	W229:0	W230:0	W231:0	W232:0	W233:0	W234:0	W235:0	W236:0	W237:0	W238:0	W239:0	W240:0	W241:0	W242:0	W243:0	W244:0	W245:0	W246:0	W247:0	W248:0	W249:0	W250:0	W251:0	W252:0	W253:0	W254:0	W255:0	W256:117449
+traffic_breakdown_coretomem[CONST_ACC_R] = 7920 {8:990,}
+traffic_breakdown_coretomem[GLOBAL_ACC_R] = 16448 {8:2056,}
+traffic_breakdown_coretomem[GLOBAL_ACC_W] = 279616 {136:2056,}
+traffic_breakdown_coretomem[INST_ACC_R] = 10440 {8:1305,}
+traffic_breakdown_coretomem[TEXTURE_ACC_R] = 240 {8:30,}
+traffic_breakdown_memtocore[CONST_ACC_R] = 71280 {72:990,}
+traffic_breakdown_memtocore[GLOBAL_ACC_R] = 279616 {136:2056,}
+traffic_breakdown_memtocore[GLOBAL_ACC_W] = 16448 {8:2056,}
+traffic_breakdown_memtocore[INST_ACC_R] = 177480 {136:1305,}
+traffic_breakdown_memtocore[TEXTURE_ACC_R] = 4080 {136:30,}
+maxmrqlatency = 642 
+maxdqlatency = 0 
+maxmflatency = 2181 
+averagemflatency = 596 
+max_icnt2mem_latency = 711 
+max_icnt2sh_latency = 42553 
+mrq_lat_table:994 	116 	297 	415 	597 	833 	1443 	1355 	56 	127 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	
+dq_lat_table:0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	
+mf_lat_table:0 	0 	0 	0 	0 	0 	0 	192 	2318 	2027 	556 	39 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	
+icnt2mem_lat_table:0 	0 	0 	3034 	686 	921 	1278 	255 	75 	188 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	
+icnt2sh_lat_table:0 	0 	0 	286 	1850 	848 	92 	0 	0 	0 	0 	0 	0 	0 	1118 	938 	0 	0 	0 	0 	0 	0 	0 	0 	
+mf_lat_pw_table:0 	0 	0 	0 	0 	0 	0 	3 	26 	8 	2 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	
+maximum concurrent accesses to same row:
+dram[0]:         2         2         0         0        10        10        32        32        32        32        32        32         0         0         0         0 
+dram[1]:         2         2         0         0        10        10        32        32        32        32        32        32         0         0         0         0 
+dram[2]:         4         2         0         0        10        12        32        32        32        32        32        32         0         0         0         0 
+dram[3]:         4         2         0         0        10        12        32        32        32        32        32        32         0         0         0         0 
+dram[4]:         4         2         0         0        10        12        32        32        32        32        32        32         0         0         0         0 
+dram[5]:         3         2         0         0        10        12        32        32        32        32        32        32         0         0         0         0 
+maximum service time to same row:
+dram[0]:     13325     14607     22449     22465     30644     30694     30900     31310     40036     40123     23391     23391     23897     23755     33448     33516 
+dram[1]:      9409     15402     22593     22308     30653     30688     31254     31171     40123     40116     23410     23382     23904     23767     33511     33394 
+dram[2]:     11329     16200     22569     22309     30658     30711     31274     31122     40117     40077     23395     23410     24047     23962     33498     33381 
+dram[3]:     12168     17060     22506     22530     30652     30768     31148     31105     40108     40068     23406     23422     23770     23852     33439     33499 
+dram[4]:     10650     17915     22469     22514     30624     30760     31160     31108     40090     40059     23378     23389     23775     23850     33441     33496 
+dram[5]:     13757     18735     22483     22458     30697     30750     31306     31014     40132     40050     23397     23401     23780     23797     33525     33466 
+average row accesses per activate:
+dram[0]: 11.500000 34.000000 64.000000 64.000000 37.000000 37.000000 48.000000 48.000000 48.000000 48.000000 30.000000 28.000000 32.000000 32.000000 32.000000 32.000000 
+dram[1]: 11.666667 34.000000 64.000000 64.000000 37.000000 37.000000 48.000000 48.000000 48.000000 48.000000 28.000000 28.000000 32.000000 32.000000 32.000000 32.000000 
+dram[2]: 34.500000 34.000000 64.000000 64.000000 37.000000 38.000000 48.000000 48.000000 48.000000 48.000000 28.000000 28.000000 32.000000 32.000000 32.000000 32.000000 
+dram[3]: 34.000000 34.000000 64.000000 64.000000 37.000000 38.000000 48.000000 48.000000 48.000000 48.000000 28.000000 28.000000 32.000000 32.000000 32.000000 32.000000 
+dram[4]: 22.666666 34.000000 64.000000 64.000000 37.000000 38.000000 48.000000 48.000000 48.000000 48.000000 28.000000 28.000000 32.000000 32.000000 32.000000 32.000000 
+dram[5]: 34.500000 34.000000 64.000000 64.000000 37.000000 38.000000 48.000000 48.000000 48.000000 48.000000 28.000000 28.000000 32.000000 32.000000 32.000000 32.000000 
+average row locality = 6233/165 = 37.775757
+number of total memory accesses made:
+dram[0]:         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0 
+dram[1]:         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0 
+dram[2]:         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0 
+dram[3]:         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0 
+dram[4]:         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0 
+dram[5]:         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0 
+total accesses: 0
+min_bank_accesses = 0!
+min_chip_accesses = 0!
+number of total read accesses:
+dram[0]:        39        36        32        32        42        42        64        64        64        64        46        44        32        32        32        32 
+dram[1]:        40        36        32        32        42        42        64        64        64        64        44        44        32        32        32        32 
+dram[2]:        39        36        32        32        42        44        64        64        64        64        44        44        32        32        32        32 
+dram[3]:        38        36        32        32        42        44        64        64        64        64        44        44        32        32        32        32 
+dram[4]:        38        36        32        32        42        44        64        64        64        64        44        44        32        32        32        32 
+dram[5]:        37        36        32        32        42        44        64        64        64        64        44        44        32        32        32        32 
+total reads: 4177
+bank skew: 64/32 = 2.00
+chip skew: 697/695 = 1.00
+number of total write accesses:
+dram[0]:        30        32        32        32        32        32        32        32        32        32        14        12         0         0         0         0 
+dram[1]:        30        32        32        32        32        32        32        32        32        32        12        12         0         0         0         0 
+dram[2]:        30        32        32        32        32        32        32        32        32        32        12        12         0         0         0         0 
+dram[3]:        30        32        32        32        32        32        32        32        32        32        12        12         0         0         0         0 
+dram[4]:        30        32        32        32        32        32        32        32        32        32        12        12         0         0         0         0 
+dram[5]:        32        32        32        32        32        32        32        32        32        32        12        12         0         0         0         0 
+total reads: 2056
+min_bank_accesses = 0!
+chip skew: 344/342 = 1.01
+average mf latency per bank:
+dram[0]:        590       568       641       635       394       378       452       478       370       370       499       481       486       543       552       525
+dram[1]:        724       558       663       577       378       369       474       445       358       363       537       486       561       449       660       389
+dram[2]:        782       552       670       595       383       369       506       458       365       374       554       492       570       452       638       497
+dram[3]:        777       573       643       618       367       396       453       459       334       377       452       529       469       573       599       702
+dram[4]:        781       584       639       609       364       400       437       494       332       373       433       486       446       560       383       714
+dram[5]:        702       576       649       600       384       385       481       468       354       373       470       527       531       553       480       726
+maximum mf latency per bank:
+dram[0]:       1132      1171      2117      2181      1269      1209      1905      1893       879       914       855       816       657       817       688       741
+dram[1]:       1103      1161      2166      2137      1300      1187      1929      1711       833       903       912       836       735       638       748       538
+dram[2]:       1103      1148      2128      2101      1311      1184      1935      1757       834       910       926       882       731       608       726       680
+dram[3]:       1059      1183      2144      2149      1149      1296      1372      1955       816       812       740       942       675       765       693       817
+dram[4]:       1045      1204      2164      2108      1182      1293      1389      1977       827       820       740       844       689       791       571       825
+dram[5]:       1180      1205      2177      2156      1191      1259      1861      2025       900       838       808       920       803       742       662       835
+
+Number of Memory Banks Accessed per Memory Operation per Warp (from 0):
+0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	
+Average # of Memory Banks Accessed per Memory Operation per Warp=-nan
+
+position of mrq chosen
+0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	
+
+average position of mrq chosen = -nan
+Memory Partition 0: 
+Cache L2_bank_000:
+MSHR contents
+MSHR: tag=0x8007a800, atomic=0 1 entries : 0x7fb94f6f6160 :  mf: uid=272354, sid07:w05, part=0, addr=0x8007a800, load , size=128, unknown  status = IN_PARTITION_DRAM (42547), 
+
+Cache L2_bank_001:
+MSHR contents
+MSHR: tag=0x80072a00, atomic=0 1 entries : 0x7fb9382e17b0 :  mf: uid=272343, sid00:w04, part=0, addr=0x80072a00, load , size=128, unknown  status = IN_PARTITION_DRAM (42551), 
+
+In Dram Latency Queue (total = 0): 
+DRAM[0]: 16 bks, busW=4 BL=8 CL=12, tRRD=2 tCCD=6, tRCD=12 tRAS=28 tRP=12 tRC=40
+n_cmd=56170 n_nop=54042 n_act=31 n_pre=15 n_req=1041 n_rd=1394 n_write=688 bw_util=0.07413
+n_activity=8756 dram_eff=0.4756
+bk0: 78a 54671i bk1: 72a 54649i bk2: 64a 54169i bk3: 64a 54177i bk4: 84a 54392i bk5: 84a 54401i bk6: 128a 53526i bk7: 128a 53552i bk8: 128a 54293i bk9: 128a 54064i bk10: 92a 54962i bk11: 88a 54908i bk12: 64a 55871i bk13: 64a 55864i bk14: 64a 55859i bk15: 64a 55769i 
+dram_util_bins: 0 0 0 0 0 0 0 0 0 0
+dram_eff_bins: 0 0 0 0 0 0 0 0 0 0
+mrqq: max=16 avg=2.04118
+Memory Partition 1: 
+Cache L2_bank_002:
+MSHR contents
+MSHR: tag=0x80074900, atomic=0 1 entries : 0x7fb94fdc7c90 :  mf: uid=272383, sid00:w05, part=1, addr=0x80074900, load , size=128, unknown  status = IN_PARTITION_MC_RETURNQ (42553), 
+
+Cache L2_bank_003:
+MSHR contents
+
+In Dram Latency Queue (total = 0): 
+DRAM[1]: 16 bks, busW=4 BL=8 CL=12, tRRD=2 tCCD=6, tRCD=12 tRAS=28 tRP=12 tRC=40
+n_cmd=56170 n_nop=54046 n_act=32 n_pre=16 n_req=1038 n_rd=1392 n_write=684 bw_util=0.07392
+n_activity=8797 dram_eff=0.472
+bk0: 80a 54615i bk1: 72a 54661i bk2: 64a 54250i bk3: 64a 54177i bk4: 84a 54473i bk5: 84a 54345i bk6: 128a 53535i bk7: 128a 53387i bk8: 128a 54235i bk9: 128a 54050i bk10: 88a 55135i bk11: 88a 54960i bk12: 64a 55930i bk13: 64a 55792i bk14: 64a 55953i bk15: 64a 55669i 
+dram_util_bins: 0 0 0 0 0 0 0 0 0 0
+dram_eff_bins: 0 0 0 0 0 0 0 0 0 0
+mrqq: max=16 avg=2.02161
+Memory Partition 2: 
+Cache L2_bank_004:
+MSHR contents
+
+Cache L2_bank_005:
+MSHR contents
+
+In Dram Latency Queue (total = 0): 
+DRAM[2]: 16 bks, busW=4 BL=8 CL=12, tRRD=2 tCCD=6, tRCD=12 tRAS=28 tRP=12 tRC=40
+n_cmd=56170 n_nop=54052 n_act=28 n_pre=12 n_req=1039 n_rd=1394 n_write=684 bw_util=0.07399
+n_activity=8663 dram_eff=0.4797
+bk0: 78a 54722i bk1: 72a 54683i bk2: 64a 54336i bk3: 64a 54213i bk4: 84a 54431i bk5: 88a 54287i bk6: 128a 53471i bk7: 128a 53331i bk8: 128a 54251i bk9: 128a 54091i bk10: 88a 55210i bk11: 88a 54997i bk12: 64a 55913i bk13: 64a 55831i bk14: 64a 55938i bk15: 64a 55642i 
+dram_util_bins: 0 0 0 0 0 0 0 0 0 0
+dram_eff_bins: 0 0 0 0 0 0 0 0 0 0
+mrqq: max=16 avg=2.01606
+Memory Partition 3: 
+Cache L2_bank_006:
+MSHR contents
+
+Cache L2_bank_007:
+MSHR contents
+
+In Dram Latency Queue (total = 0): 
+DRAM[3]: 16 bks, busW=4 BL=8 CL=12, tRRD=2 tCCD=6, tRCD=12 tRAS=28 tRP=12 tRC=40
+n_cmd=56170 n_nop=54054 n_act=28 n_pre=12 n_req=1038 n_rd=1392 n_write=684 bw_util=0.07392
+n_activity=8660 dram_eff=0.4794
+bk0: 76a 54774i bk1: 72a 54647i bk2: 64a 54183i bk3: 64a 54148i bk4: 84a 54501i bk5: 88a 54255i bk6: 128a 53589i bk7: 128a 53444i bk8: 128a 54296i bk9: 128a 54064i bk10: 88a 55075i bk11: 88a 54916i bk12: 64a 55875i bk13: 64a 55847i bk14: 64a 55880i bk15: 64a 55772i 
+dram_util_bins: 0 0 0 0 0 0 0 0 0 0
+dram_eff_bins: 0 0 0 0 0 0 0 0 0 0
+mrqq: max=16 avg=2.00707
+Memory Partition 4: 
+Cache L2_bank_008:
+MSHR contents
+
+Cache L2_bank_009:
+MSHR contents
+
+In Dram Latency Queue (total = 0): 
+DRAM[4]: 16 bks, busW=4 BL=8 CL=12, tRRD=2 tCCD=6, tRCD=12 tRAS=28 tRP=12 tRC=40
+n_cmd=56170 n_nop=54052 n_act=29 n_pre=13 n_req=1038 n_rd=1392 n_write=684 bw_util=0.07392
+n_activity=8749 dram_eff=0.4746
+bk0: 76a 54773i bk1: 72a 54624i bk2: 64a 54138i bk3: 64a 54185i bk4: 84a 54439i bk5: 88a 54287i bk6: 128a 53554i bk7: 128a 53597i bk8: 128a 54254i bk9: 128a 54013i bk10: 88a 55125i bk11: 88a 54948i bk12: 64a 55907i bk13: 64a 55856i bk14: 64a 55850i bk15: 64a 55766i 
+dram_util_bins: 0 0 0 0 0 0 0 0 0 0
+dram_eff_bins: 0 0 0 0 0 0 0 0 0 0
+mrqq: max=16 avg=2.01325
+Memory Partition 5: 
+Cache L2_bank_010:
+MSHR contents
+MSHR: tag=0x80072900, atomic=0 1 entries : 0x7fb94b26e290 :  mf: uid=272379, sid00:w04, part=5, addr=0x80072900, load , size=128, unknown  status = IN_PARTITION_DRAM (42551), 
+
+Cache L2_bank_011:
+MSHR contents
+
+In Dram Latency Queue (total = 0): 
+DRAM[5]: 16 bks, busW=4 BL=8 CL=12, tRRD=2 tCCD=6, tRCD=12 tRAS=28 tRP=12 tRC=40
+n_cmd=56170 n_nop=54052 n_act=28 n_pre=12 n_req=1039 n_rd=1390 n_write=688 bw_util=0.07399
+n_activity=8581 dram_eff=0.4843
+bk0: 74a 54599i bk1: 72a 54629i bk2: 64a 54242i bk3: 64a 54110i bk4: 84a 54440i bk5: 88a 54301i bk6: 128a 53467i bk7: 128a 53428i bk8: 128a 54244i bk9: 128a 54019i bk10: 88a 55091i bk11: 88a 54913i bk12: 64a 55930i bk13: 64a 55812i bk14: 64a 55935i bk15: 64a 55666i 
+dram_util_bins: 0 0 0 0 0 0 0 0 0 0
+dram_eff_bins: 0 0 0 0 0 0 0 0 0 0
+mrqq: max=16 avg=2.0391
+
+========= L2 cache stats =========
+L2_cache_bank[0]: Access = 599, Miss = 351, Miss_rate = 0.586, Pending_hits = 21, Reservation_fails = 1334
+L2_cache_bank[1]: Access = 492, Miss = 346, Miss_rate = 0.703, Pending_hits = 12, Reservation_fails = 876
+L2_cache_bank[2]: Access = 627, Miss = 350, Miss_rate = 0.558, Pending_hits = 24, Reservation_fails = 1124
+L2_cache_bank[3]: Access = 492, Miss = 346, Miss_rate = 0.703, Pending_hits = 12, Reservation_fails = 628
+L2_cache_bank[4]: Access = 597, Miss = 349, Miss_rate = 0.585, Pending_hits = 21, Reservation_fails = 1120
+L2_cache_bank[5]: Access = 494, Miss = 348, Miss_rate = 0.704, Pending_hits = 12, Reservation_fails = 668
+L2_cache_bank[6]: Access = 552, Miss = 348, Miss_rate = 0.630, Pending_hits = 18, Reservation_fails = 1191
+L2_cache_bank[7]: Access = 494, Miss = 348, Miss_rate = 0.704, Pending_hits = 12, Reservation_fails = 946
+L2_cache_bank[8]: Access = 580, Miss = 348, Miss_rate = 0.600, Pending_hits = 24, Reservation_fails = 1067
+L2_cache_bank[9]: Access = 494, Miss = 348, Miss_rate = 0.704, Pending_hits = 12, Reservation_fails = 975
+L2_cache_bank[10]: Access = 522, Miss = 347, Miss_rate = 0.665, Pending_hits = 15, Reservation_fails = 927
+L2_cache_bank[11]: Access = 494, Miss = 348, Miss_rate = 0.704, Pending_hits = 12, Reservation_fails = 1018
+L2_total_cache_accesses = 6437
+L2_total_cache_misses = 4177
+L2_total_cache_miss_rate = 0.6489
+L2_total_cache_pending_hits = 195
+L2_total_cache_reservation_fails = 11874
+L2_total_cache_breakdown:
+	L2_cache_stats_breakdown[GLOBAL_ACC_R][MISS] = 2056
+	L2_cache_stats_breakdown[GLOBAL_ACC_R][RESERVATION_FAIL] = 5173
+	L2_cache_stats_breakdown[CONST_ACC_R][HIT] = 854
+	L2_cache_stats_breakdown[CONST_ACC_R][HIT_RESERVED] = 102
+	L2_cache_stats_breakdown[CONST_ACC_R][MISS] = 34
+	L2_cache_stats_breakdown[CONST_ACC_R][RESERVATION_FAIL] = 3562
+	L2_cache_stats_breakdown[TEXTURE_ACC_R][HIT] = 22
+	L2_cache_stats_breakdown[TEXTURE_ACC_R][HIT_RESERVED] = 6
+	L2_cache_stats_breakdown[TEXTURE_ACC_R][MISS] = 2
+	L2_cache_stats_breakdown[TEXTURE_ACC_R][RESERVATION_FAIL] = 220
+	L2_cache_stats_breakdown[GLOBAL_ACC_W][MISS] = 2056
+	L2_cache_stats_breakdown[GLOBAL_ACC_W][RESERVATION_FAIL] = 7
+	L2_cache_stats_breakdown[INST_ACC_R][HIT] = 1189
+	L2_cache_stats_breakdown[INST_ACC_R][HIT_RESERVED] = 87
+	L2_cache_stats_breakdown[INST_ACC_R][MISS] = 29
+	L2_cache_stats_breakdown[INST_ACC_R][RESERVATION_FAIL] = 2912
+L2_cache_data_port_util = 0.013
+L2_cache_fill_port_util = 0.033
+
+icnt_total_pkts_mem_to_simt=21981
+icnt_total_pkts_simt_to_mem=14661
+LD_mem_lat_dist  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ST_mem_lat_dist  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+----------------------------Interconnect-DETAILS--------------------------------
+Class 0:
+Packet latency average = 21.4467
+	minimum = 6
+	maximum = 599
+Network latency average = 16.3924
+	minimum = 6
+	maximum = 589
+Slowest packet = 1369
+Flit latency average = 16.1738
+	minimum = 6
+	maximum = 586
+Slowest flit = 3699
+Fragmentation average = 0.48128
+	minimum = 0
+	maximum = 549
+Injected packet rate average = 0.0112049
+	minimum = 0.00965832 (at node 8)
+	maximum = 0.0147342 (at node 11)
+Accepted packet rate average = 0.0112049
+	minimum = 0.00965832 (at node 8)
+	maximum = 0.0147342 (at node 11)
+Injected flit rate average = 0.0318915
+	minimum = 0.0216901 (at node 8)
+	maximum = 0.0527565 (at node 11)
+Accepted flit rate average= 0.0318915
+	minimum = 0.0277295 (at node 10)
+	maximum = 0.0354138 (at node 0)
+Injected packet length average = 2.8462
+Accepted packet length average = 2.8462
+Total in-flight flits = 0 (0 measured)
+====== Overall Traffic Statistics ======
+====== Traffic class 0 ======
+Packet latency average = 21.4467 (1 samples)
+	minimum = 6 (1 samples)
+	maximum = 599 (1 samples)
+Network latency average = 16.3924 (1 samples)
+	minimum = 6 (1 samples)
+	maximum = 589 (1 samples)
+Flit latency average = 16.1738 (1 samples)
+	minimum = 6 (1 samples)
+	maximum = 586 (1 samples)
+Fragmentation average = 0.48128 (1 samples)
+	minimum = 0 (1 samples)
+	maximum = 549 (1 samples)
+Injected packet rate average = 0.0112049 (1 samples)
+	minimum = 0.00965832 (1 samples)
+	maximum = 0.0147342 (1 samples)
+Accepted packet rate average = 0.0112049 (1 samples)
+	minimum = 0.00965832 (1 samples)
+	maximum = 0.0147342 (1 samples)
+Injected flit rate average = 0.0318915 (1 samples)
+	minimum = 0.0216901 (1 samples)
+	maximum = 0.0527565 (1 samples)
+Accepted flit rate average = 0.0318915 (1 samples)
+	minimum = 0.0277295 (1 samples)
+	maximum = 0.0354138 (1 samples)
+Injected packet size average = 2.8462 (1 samples)
+Accepted packet size average = 2.8462 (1 samples)
+Hops average = 1 (1 samples)
+----------------------------END-of-Interconnect-DETAILS-------------------------
+
+
+gpgpu_simulation_time = 0 days, 0 hrs, 6 min, 11 sec (371 sec)
+gpgpu_simulation_rate = 81042 (inst/sec)
+gpgpu_simulation_rate = 114 (cycle/sec)
+GPGPU-Sim: synchronize waiting for inactive GPU simulation
+GPGPU-Sim API: Stream Manager State
+GPGPU-Sim: detected inactive GPU simulation thread
+GPU processing time: 370994.156250 (ms)
+Total processing time: 371065.343750 (ms)
+
+
+###############################################################
+
